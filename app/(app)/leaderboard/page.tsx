@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { ButtonLink } from "@/components/Button";
-import { CatAvatar } from "@/components/Cat";
 import { StreakBadge } from "@/components/StreakFlame";
 import { ErrorNote, Spinner } from "@/components/ui";
 import { useLeaderboard } from "@/lib/data/hooks";
@@ -40,9 +39,12 @@ export default function LeaderboardPage() {
                   }`}
                   aria-current={me ? "true" : undefined}
                 >
-                  <span className="num w-7 text-center text-xl">{r.rank}</span>
-                  <span className={`rounded-full ${r.rank <= 3 ? `ring-4 ${RING[r.rank - 1]}` : ""}`}>
-                    <CatAvatar avatar={r.avatar} size={44} />
+                  <span
+                    className={`num flex size-10 shrink-0 items-center justify-center rounded-full text-xl ${
+                      r.rank <= 3 ? `ring-4 ${RING[r.rank - 1]}` : ""
+                    }`}
+                  >
+                    {r.rank}
                   </span>
                   <span className="min-w-0 flex-1 truncate font-extrabold">
                     {r.display_name}

@@ -4,6 +4,8 @@ Choices made where the spec was open or needed adjusting. Newest first.
 
 | Date | Decision | Why |
 | --- | --- | --- |
+| 2026-11-10 | No profile pictures and no cat mascot. `profiles.avatar` is now nullable and unused (drop later). App icon is the streak flame. | Owner's request. |
+| 2026-11-10 | UI copy kept minimal: no taglines, reassurance or hints that restate labels. | Owner's request. |
 | 2026-11-10 | Placeholder login email is `<login_id>@readlet.invalid`. | `.invalid` is reserved and can never receive mail; Supabase accepted it in a sign-up test. |
 | 2026-11-10 | `libsodium-wrappers-sumo` is used (the standard build lacks `crypto_pwhash`). | Spec allows sumo when pwhash is missing. |
 | 2026-11-10 | The secret key is locked with XChaCha20-Poly1305 (random nonce, fixed additional data); KDF contexts are `rl_ident` (identity seed) and `rl_passw` (subkey 1 = login key, 2 = wrap key). | Spec names the derivations but not the wrap cipher; this reuses the spec's AEAD. |

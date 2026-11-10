@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useFriends, useLeaderboard } from "@/lib/data/hooks";
 import { useReady } from "@/lib/session/SessionProvider";
-import { CatAvatar } from "./Cat";
 import { StreakBadge } from "./StreakFlame";
 import { Card } from "./ui";
 
@@ -20,7 +19,6 @@ export function SideColumn() {
           {board.data?.slice(0, 5).map((r) => (
             <li key={r.user_id} className={`flex items-center gap-2 ${r.user_id === userId ? "font-extrabold" : ""}`}>
               <span className="w-5 text-text-muted">{r.rank}</span>
-              <CatAvatar avatar={r.avatar} size={28} />
               <span className="flex-1 truncate">{r.display_name}</span>
               <span className="num">{r.score}</span>
             </li>
@@ -37,7 +35,6 @@ export function SideColumn() {
             {friends.data.map((f) => (
               <li key={f.id}>
                 <Link href={`/u/${f.username}`} className="flex items-center gap-2">
-                  <CatAvatar avatar={f.avatar} size={28} />
                   <span className="flex-1 truncate">{f.display_name}</span>
                   {f.logged_today && <span className="text-accent-text" aria-label="read today">✓</span>}
                   <StreakBadge n={f.current_streak} lit={f.logged_today} />

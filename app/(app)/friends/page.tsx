@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/Button";
-import { CatAvatar } from "@/components/Cat";
 import { UserCard } from "@/components/InviteCard";
 import { StreakBadge } from "@/components/StreakFlame";
 import { Card, Input, Spinner } from "@/components/ui";
@@ -110,12 +109,9 @@ export default function FriendsPage() {
             href={`/u/${f.username}`}
             className="flex min-h-16 items-center gap-3 rounded-[var(--radius-card)] bg-surface p-3 shadow-sm"
           >
-            <CatAvatar avatar={f.avatar} size={44} />
             <span className="min-w-0 flex-1">
               <span className="block truncate font-extrabold">{f.display_name}</span>
-              <span className={`block text-sm ${f.logged_today ? "text-accent-text" : "text-text-muted"}`}>
-                {f.logged_today ? "✓ Today" : "–"}
-              </span>
+              {f.logged_today && <span className="block text-sm text-accent-text">✓ Today</span>}
             </span>
             <StreakBadge n={f.current_streak} lit={f.logged_today} />
           </Link>
@@ -130,7 +126,6 @@ function RequestRow({ r }: { r: Request }) {
   const busy = accept.isPending || remove.isPending;
   return (
     <div className="flex items-center gap-3 rounded-[var(--radius-card)] bg-surface p-3 shadow-sm">
-      <CatAvatar avatar={r.other.avatar} size={44} />
       <span className="min-w-0 flex-1">
         <span className="block truncate font-extrabold">{r.other.display_name}</span>
         <span className="block truncate text-sm text-text-muted">@{r.other.username}</span>

@@ -4,7 +4,6 @@ import { useState, useSyncExternalStore } from "react";
 import { useFindUser, useFriendActions, useFriends, useRequests } from "@/lib/data/hooks";
 import { useReady } from "@/lib/session/SessionProvider";
 import { Button } from "./Button";
-import { CatAvatar } from "./Cat";
 
 export const INVITE_KEY = "readlet:invite";
 const noop = () => () => {};
@@ -57,7 +56,6 @@ export function UserCard({ username, onDone }: { username: string; onDone?: () =
 
   return (
     <div className="flex items-center gap-3 rounded-[var(--radius-card)] bg-surface p-4 shadow-sm">
-      <CatAvatar avatar={u.avatar} size={52} />
       <div className="min-w-0 flex-1">
         <p className="truncate text-lg font-extrabold">{u.display_name}</p>
         <p className="truncate text-text-muted">@{u.username}</p>

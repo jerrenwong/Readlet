@@ -79,7 +79,7 @@ export function useUserEntries(userId: string | undefined) {
   return { ...q, entries, decrypting: !s || keys.isLoading };
 }
 
-export type FeedItem = Entry & { author: Pick<Profile, "id" | "username" | "display_name" | "avatar"> | null };
+export type FeedItem = Entry & { author: Pick<Profile, "id" | "username" | "display_name"> | null };
 
 const PAGE = 30;
 
@@ -95,7 +95,7 @@ export function useFeed() {
       must(
         await supabase()
           .from("entries")
-          .select(`${ENTRY_COLS}, author:profiles!entries_user_id_fkey(id, username, display_name, avatar)`)
+          .select(`${ENTRY_COLS}, author:profiles!entries_user_id_fkey(id, username, display_name)`)
           .neq("user_id", userId)
           .order("created_at", { ascending: false })
           .range(pageParam * PAGE, pageParam * PAGE + PAGE - 1),
@@ -111,7 +111,7 @@ export function useFeed() {
   return { ...q, items };
 }
 
-export type FriendStat = Pick<Profile, "id" | "username" | "display_name" | "avatar" | "public_key"> & {
+export type FriendStat = Pick<Profile, "id" | "username" | "display_name" | "public_key"> & {
   current_streak: number;
   logged_today: boolean;
 };
@@ -123,7 +123,7 @@ export function useFriends() {
   });
 }
 
-export type PublicUser = Pick<Profile, "id" | "username" | "display_name" | "avatar" | "public_key">;
+export type PublicUser = Pick<Profile, "id" | "username" | "display_name" | "public_key">;
 export type Request = { other: PublicUser; incoming: boolean; created_at: string };
 
 export function useRequests() {
@@ -143,7 +143,7 @@ export function useRequests() {
       if (!rows.length) return [];
       const ids = rows.map((r) => (r.user_a === userId ? r.user_b : r.user_a));
       const profiles = must(
-        await sb.from("profiles").select("id, username, display_name, avatar, public_key").in("id", ids),
+        await sb.from("profiles").select("id, username, display_name, public_key").in("id", ids),
       ) as PublicUser[];
       const byId = new Map(profiles.map((p) => [p.id, p]));
       return rows
@@ -160,7 +160,6 @@ export type LeaderRow = {
   user_id: string;
   username: string;
   display_name: string;
-  avatar: string;
   score: number;
   current_streak: number;
   rank: number;

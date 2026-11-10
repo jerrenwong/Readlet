@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { AvatarPicker } from "@/components/AvatarPicker";
 import { Button } from "@/components/Button";
 import { Card, Field, Input } from "@/components/ui";
 import { changePassword, deleteAccount, displayNameSchema, FriendlyError, usernameSchema } from "@/lib/session/auth";
@@ -27,7 +26,6 @@ function ProfileForm() {
   const { profile, setProfile } = useReady();
   const [username, setUsername] = useState(profile.username);
   const [name, setName] = useState(profile.display_name);
-  const [avatar, setAvatar] = useState(profile.avatar);
   const [state, setState] = useState<{ busy?: boolean; error?: string; ok?: boolean }>({});
 
   async function save(e: FormEvent) {
@@ -41,13 +39,13 @@ function ProfileForm() {
     setState({ busy: true });
     const { error } = await supabase()
       .from("profiles")
-      .update({ username: u.data, display_name: n.data, avatar })
+      .update({ username: u.data, display_name: n.data })
       .eq("id", profile.id);
     if (error) {
       setState({ error: error.code === "23505" ? "Username taken." : error.message });
       return;
     }
-    setProfile({ ...profile, username: u.data, display_name: n.data, avatar });
+    setProfile({ ...profile, username: u.data, display_name: n.data });
     setState({ ok: true });
   }
 
@@ -61,7 +59,6 @@ function ProfileForm() {
         <Field label="Display name">
           <Input value={name} onChange={(e) => setName(e.target.value)} maxLength={40} />
         </Field>
-        <AvatarPicker value={avatar} onChange={setAvatar} />
         {state.error && <p className="text-danger-text" role="alert">{state.error}</p>}
         {state.ok && <p className="text-accent-text" role="status">Saved</p>}
         <Button type="submit" disabled={state.busy}>

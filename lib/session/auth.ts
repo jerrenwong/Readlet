@@ -21,7 +21,7 @@ export async function isUsernameAvailable(username: string): Promise<boolean> {
   return must(await supabase().rpc("username_available", { username })) as boolean;
 }
 
-export async function signUp(input: { username: string; displayName: string; avatar: string; password: string }) {
+export async function signUp(input: { username: string; displayName: string; password: string }) {
   const s = await getSodium();
   const username = usernameSchema.parse(input.username);
   const displayName = displayNameSchema.parse(input.displayName);
@@ -43,7 +43,7 @@ export async function signUp(input: { username: string; displayName: string; ava
   const { error: e2 } = await sb.rpc("create_account", {
     p_username: username,
     p_display_name: displayName,
-    p_avatar: input.avatar,
+    p_avatar: null,
     p_timezone: deviceTimeZone(),
     p_public_key: b64.enc(s, identity.publicKey),
     p_login_id: loginId,

@@ -3,11 +3,9 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { AvatarPicker } from "@/components/AvatarPicker";
 import { Button } from "@/components/Button";
 import { PublicPage } from "@/components/PublicPage";
 import { Field, Input } from "@/components/ui";
-import { DEFAULT_AVATAR } from "@/lib/avatars";
 import { displayNameSchema, FriendlyError, isUsernameAvailable, passwordSchema, signUp, usernameSchema } from "@/lib/session/auth";
 import { useSession } from "@/lib/session/SessionProvider";
 
@@ -18,7 +16,6 @@ export default function SignUpPage() {
   const { reload } = useSession();
   const [username, setUsername] = useState("");
   const [displayName, setDisplayName] = useState("");
-  const [avatar, setAvatar] = useState<string>(DEFAULT_AVATAR);
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<Errors>({});
   const [busy, setBusy] = useState(false);
@@ -43,7 +40,7 @@ export default function SignUpPage() {
     if (Object.keys(next).length) return;
     setBusy(true);
     try {
-      await signUp({ username, displayName, avatar, password });
+      await signUp({ username, displayName, password });
       await reload();
       router.replace("/today");
     } catch (err) {
@@ -82,7 +79,6 @@ export default function SignUpPage() {
         <Field label="Display name" error={errors.displayName}>
           <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} maxLength={40} autoComplete="nickname" />
         </Field>
-        <AvatarPicker value={avatar} onChange={setAvatar} />
         <Field label="Password" error={errors.password} hint="Min. 10 characters. Can't be reset.">
           <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
         </Field>

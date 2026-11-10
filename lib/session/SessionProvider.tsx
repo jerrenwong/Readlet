@@ -13,7 +13,6 @@ export type Profile = {
   id: string;
   username: string;
   display_name: string;
-  avatar: string;
   timezone: string;
   public_key: string;
 };
@@ -43,7 +42,7 @@ async function resolve(): Promise<State> {
   }
   const { data: profile } = await sb
     .from("profiles")
-    .select("id, username, display_name, avatar, timezone, public_key")
+    .select("id, username, display_name, timezone, public_key")
     .eq("id", user.id)
     .maybeSingle<Profile>();
   if (!profile) {
