@@ -23,10 +23,7 @@ export function InstallHint() {
   if (!show || hidden) return null;
   return (
     <div className="flex items-start gap-3 rounded-[var(--radius-card)] border-2 border-dashed border-primary/50 bg-surface p-4">
-      <p className="flex-1 text-sm">
-        <strong className="font-extrabold">Add Readlet to your Home Screen</strong> so iPhone keeps you signed in: tap
-        Share, then &ldquo;Add to Home Screen&rdquo;.
-      </p>
+      <p className="flex-1 text-sm">Add to Home Screen (Share menu) to stay signed in.</p>
       <button
         type="button"
         className="min-h-11 rounded-xl px-2 font-extrabold text-text-muted"
@@ -37,7 +34,7 @@ export function InstallHint() {
           setHidden(true);
         }}
       >
-        Got it
+        OK
       </button>
     </div>
   );

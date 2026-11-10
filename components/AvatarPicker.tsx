@@ -4,7 +4,7 @@ import { CatAvatar } from "./Cat";
 export function AvatarPicker({ value, onChange }: { value: string; onChange: (id: string) => void }) {
   return (
     <fieldset>
-      <legend className="mb-2 font-extrabold">Pick your cat</legend>
+      <legend className="mb-2 font-extrabold">Avatar</legend>
       <div className="grid grid-cols-4 gap-2">
         {AVATARS.map((a) => (
           <label
@@ -22,7 +22,7 @@ export function AvatarPicker({ value, onChange }: { value: string; onChange: (id
               className="sr-only"
             />
             <CatAvatar avatar={a.id} size={52} />
-            <span className={`text-xs ${value === a.id ? "text-text" : "text-text-muted"}`}>{a.label}</span>
+            <span className="sr-only">{a.label}</span>
           </label>
         ))}
       </div>

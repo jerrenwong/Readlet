@@ -15,7 +15,7 @@ export function SideColumn() {
   return (
     <div className="sticky top-8 flex flex-col gap-4">
       <Card>
-        <h2 className="mb-3 text-lg">This week&apos;s top 5</h2>
+        <h2 className="mb-3 text-lg">This week</h2>
         <ol className="flex flex-col gap-2">
           {board.data?.slice(0, 5).map((r) => (
             <li key={r.user_id} className={`flex items-center gap-2 ${r.user_id === userId ? "font-extrabold" : ""}`}>
@@ -27,11 +27,11 @@ export function SideColumn() {
           ))}
         </ol>
         <Link href="/leaderboard" className="mt-3 inline-block font-extrabold text-accent-text">
-          Full leaderboard
+          All
         </Link>
       </Card>
       <Card>
-        <h2 className="mb-3 text-lg">Friends&apos; streaks</h2>
+        <h2 className="mb-3 text-lg">Friends</h2>
         {friends.data?.length ? (
           <ul className="flex flex-col gap-2">
             {friends.data.map((f) => (
@@ -46,12 +46,9 @@ export function SideColumn() {
             ))}
           </ul>
         ) : (
-          <p className="text-text-muted">
-            No friends yet.{" "}
-            <Link href="/friends" className="font-extrabold text-accent-text">
-              Find friends
-            </Link>
-          </p>
+          <Link href="/friends" className="font-extrabold text-accent-text">
+            Add friends
+          </Link>
         )}
       </Card>
     </div>

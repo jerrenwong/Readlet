@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { ButtonLink } from "@/components/Button";
-import { Cat } from "@/components/Cat";
 import { INVITE_KEY } from "@/components/InviteCard";
 import { Spinner } from "@/components/ui";
 import { useSession } from "@/lib/session/SessionProvider";
@@ -26,11 +25,9 @@ export function InvitePage() {
   if (status !== "signedOut") return <Spinner />;
   return (
     <main className="mx-auto flex min-h-dvh max-w-[480px] flex-col items-center justify-center gap-5 px-4 text-center">
-      <Cat state="waving" size={180} />
       <h1 className="text-3xl">
         <span className="text-primary-edge">@{name}</span> invited you to Readlet
       </h1>
-      <p className="text-lg">Log what you read each day, keep a streak, and see each other&apos;s reads.</p>
       <ButtonLink href="/signup" className="w-full max-w-xs text-xl">
         Start reading
       </ButtonLink>

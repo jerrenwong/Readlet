@@ -47,7 +47,7 @@ export function UserCard({ username, onDone }: { username: string; onDone?: () =
   if (!user.data)
     return (
       <p className="rounded-[var(--radius-card)] bg-surface p-4 text-text-muted">
-        No one is called <strong>@{username}</strong>. Usernames must match exactly.
+        No user @{username}
       </p>
     );
   const u = user.data;
@@ -68,9 +68,9 @@ export function UserCard({ username, onDone }: { username: string; onDone?: () =
         )}
       </div>
       {isMe ? (
-        <span className="text-text-muted">That&apos;s you!</span>
+        <span className="text-text-muted">You</span>
       ) : isFriend ? (
-        <span className="font-extrabold text-accent-text">Friends ✓</span>
+        <span className="font-extrabold text-accent-text">Friends</span>
       ) : req?.incoming ? (
         <Button
           size="sm"
@@ -80,14 +80,14 @@ export function UserCard({ username, onDone }: { username: string; onDone?: () =
           Accept
         </Button>
       ) : req ? (
-        <span className="text-text-muted">Request sent</span>
+        <span className="text-text-muted">Sent</span>
       ) : (
         <Button
           size="sm"
           disabled={send.isPending}
           onClick={() => send.mutate(u.id, { onSuccess: onDone, onError: (e) => setError(e.message) })}
         >
-          Send friend request
+          Add friend
         </Button>
       )}
     </div>

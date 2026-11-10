@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef } from "react";
 import { ButtonLink } from "@/components/Button";
-import { Cat } from "@/components/Cat";
 import { EntryCard } from "@/components/EntryCard";
 import { Card, ErrorNote, Spinner } from "@/components/ui";
 import { useFeed, useFriends, type FeedItem } from "@/lib/data/hooks";
@@ -38,14 +37,11 @@ export default function FeedPage() {
     <div className="flex flex-col gap-5">
       <h1 className="text-2xl">Feed</h1>
       {feed.isLoading && <Spinner />}
-      {feed.error && <ErrorNote>Couldn&apos;t load the feed. Check your connection.</ErrorNote>}
+      {feed.error && <ErrorNote>Couldn&apos;t load.</ErrorNote>}
       {feed.items && feed.items.length === 0 && (
         <Card className="flex flex-col items-center gap-3 text-center">
-          <Cat state="waving" size={120} />
-          <p className="font-extrabold">
-            {friends.data?.length ? "Your friends haven't logged anything yet." : "Your friends' reads will show up here."}
-          </p>
-          <ButtonLink href="/friends">Invite friends</ButtonLink>
+          <p className="font-extrabold">No reads yet</p>
+          {!friends.data?.length && <ButtonLink href="/friends">Add friends</ButtonLink>}
         </Card>
       )}
       {groups.map(([date, items]) => (

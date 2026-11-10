@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Readlet",
     short_name: "Readlet",
-    description: "Log what you read each day, keep your streak, and see your friends' reads.",
+    description: "Daily reading streaks with friends.",
     start_url: "/today",
     display: "standalone",
     background_color: "#FFF7EE",

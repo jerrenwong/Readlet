@@ -4,7 +4,6 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/Button";
-import { Cat, type CatState } from "@/components/Cat";
 import { confettiBurst, MilestoneCard } from "@/components/Celebrate";
 import { EntryCard } from "@/components/EntryCard";
 import { InstallHint } from "@/components/InstallHint";
@@ -37,39 +36,19 @@ export default function TodayPage() {
   const { entries, isLoading } = useUserEntries(userId);
   const friends = useFriends();
   const [sheet, setSheet] = useState<{ open: boolean; editing: Entry | null }>({ open: false, editing: null });
-  const [celebrating, setCelebrating] = useState(false);
   const [milestone, setMilestone] = useState<number | null>(null);
 
   const days = useMemo(() => new Set(entries?.map((e) => e.log_date)), [entries]);
   const streak = computeStreak(days, today);
   const todays = entries?.filter((e) => e.log_date === today) ?? [];
 
-  const catState: CatState = celebrating
-    ? "celebrating"
-    : streak.today
-      ? "reading"
-      : streak.atRisk
-        ? "sleepy"
-        : days.size > 0
-          ? "sad"
-          : "waving";
 
-  const line = streak.today
-    ? todays.length === 1
-      ? `Nice! Day ${streak.current}.`
-      : "Your streak is safe for today."
-    : streak.atRisk
-      ? "Log today to keep it."
-      : days.size > 0
-        ? "Fresh start! One read gets the flame going again."
-        : "Log your first read to start a streak.";
+  const line = streak.atRisk ? "Log today to keep it." : null;
 
   function onSaved(created: boolean) {
     if (!created || streak.today) return;
     const next = computeStreak([...days, today], today).current;
-    setCelebrating(true);
     void confettiBurst();
-    setTimeout(() => setCelebrating(false), 2000);
     if (isMilestone(next)) setTimeout(() => setMilestone(next), 900);
   }
 
@@ -100,9 +79,8 @@ export default function TodayPage() {
             </span>
             <span className="text-lg text-text-muted">day streak</span>
           </div>
-          <Cat state={catState} avatar={profile.avatar} size={96} className="-my-4 -mr-2 shrink-0" />
         </div>
-        <p className="mt-2 text-lg font-extrabold">{line}</p>
+        {line && <p className="mt-2 text-lg font-extrabold">{line}</p>}
       </Card>
 
       <Card className="!p-4">
@@ -113,27 +91,17 @@ export default function TodayPage() {
         + Log a read
       </Button>
 
-      <section aria-labelledby="today-h" className="flex flex-col gap-3">
-        <h1 id="today-h" className="text-xl">
-          Today
-        </h1>
-        {todays.length ? (
-          todays.map((e) => <EntryCard key={e.id} entry={e} onEdit={() => setSheet({ open: true, editing: e })} />)
-        ) : (
-          <p className="text-text-muted">Nothing logged yet today.</p>
-        )}
+      <h1 className="sr-only">Today</h1>
+      <section aria-label="Today's reads" className="flex flex-col gap-3">
+        {todays.map((e) => (
+          <EntryCard key={e.id} entry={e} onEdit={() => setSheet({ open: true, editing: e })} />
+        ))}
       </section>
 
       {friends.data && friends.data.length === 0 && (
-        <Card className="flex items-center gap-4">
-          <Cat state="waving" size={72} />
-          <div className="flex-1">
-            <p className="font-extrabold">Reading is better with friends.</p>
-            <Link href="/friends" className="font-extrabold text-accent-text underline">
-              Find friends by username
-            </Link>
-          </div>
-        </Card>
+        <Link href="/friends" className="min-h-11 self-center font-extrabold text-accent-text underline">
+          Add friends
+        </Link>
       )}
 
       <LogSheet
@@ -142,7 +110,7 @@ export default function TodayPage() {
         onClose={() => setSheet({ open: false, editing: sheet.editing })}
         onSaved={onSaved}
       />
-      <MilestoneCard days={milestone} avatar={profile.avatar} onClose={() => setMilestone(null)} />
+      <MilestoneCard days={milestone} onClose={() => setMilestone(null)} />
     </div>
   );
 }

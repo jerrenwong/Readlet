@@ -27,7 +27,7 @@ export default function SignUpPage() {
     const u = usernameSchema.safeParse(username);
     if (!u.success) return;
     try {
-      if (!(await isUsernameAvailable(u.data))) setErrors((e) => ({ ...e, username: "That username is taken." }));
+      if (!(await isUsernameAvailable(u.data))) setErrors((e) => ({ ...e, username: "Username taken." }));
     } catch {}
   }
 
@@ -38,7 +38,7 @@ export default function SignUpPage() {
     if (!u.success) next.username = u.error.issues[0].message;
     const d = displayNameSchema.safeParse(displayName);
     if (!d.success) next.displayName = d.error.issues[0].message;
-    if (!passwordSchema.safeParse(password).success) next.password = "At least 10 characters.";
+    if (!passwordSchema.safeParse(password).success) next.password = "Min. 10 characters.";
     setErrors(next);
     if (Object.keys(next).length) return;
     setBusy(true);
@@ -51,7 +51,7 @@ export default function SignUpPage() {
         form:
           err instanceof FriendlyError
             ? err.message
-            : "Couldn't create your account. Check your connection and try again.",
+            : "Sign-up failed.",
       });
       setBusy(false);
     }
@@ -62,9 +62,9 @@ export default function SignUpPage() {
       <Link href="/welcome" className="mb-4 min-h-11 self-start font-extrabold text-text-muted">
         ← Back
       </Link>
-      <h1 className="mb-6 text-3xl">Make your account</h1>
+      <h1 className="mb-6 text-3xl">Sign up</h1>
       <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
-        <Field label="Username" error={errors.username} hint="3–20 lowercase letters, digits or _. Friends find you by it.">
+        <Field label="Username" error={errors.username} hint="3–20 characters: a–z, 0–9, _">
           <Input
             value={username}
             onChange={(e) => {
@@ -83,20 +83,16 @@ export default function SignUpPage() {
           <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} maxLength={40} autoComplete="nickname" />
         </Field>
         <AvatarPicker value={avatar} onChange={setAvatar} />
-        <Field label="Password" error={errors.password} hint="At least 10 characters. A long passphrase is safest.">
+        <Field label="Password" error={errors.password} hint="Min. 10 characters. Can't be reset.">
           <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
         </Field>
-        <p className="rounded-2xl bg-primary/10 px-4 py-3 text-sm">
-          <strong className="font-extrabold">Keep your password safe.</strong> It protects your encryption key, so a
-          forgotten password can&apos;t be reset.
-        </p>
         {errors.form && (
           <p className="text-danger-text" role="alert">
             {errors.form}
           </p>
         )}
         <Button type="submit" disabled={busy}>
-          {busy ? "Creating your keys…" : "Create account"}
+          {busy ? "Creating…" : "Create account"}
         </Button>
       </form>
     </PublicPage>

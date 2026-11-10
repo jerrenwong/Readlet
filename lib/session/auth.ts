@@ -11,9 +11,9 @@ export const usernameSchema = z
   .string()
   .trim()
   .toLowerCase()
-  .regex(/^[a-z0-9_]{3,20}$/, "3–20 characters: lowercase letters, digits and _");
-export const displayNameSchema = z.string().trim().min(1, "Pick a display name").max(40, "At most 40 characters");
-export const passwordSchema = z.string().min(10, "At least 10 characters");
+  .regex(/^[a-z0-9_]{3,20}$/, "3–20 characters: a–z, 0–9, _");
+export const displayNameSchema = z.string().trim().min(1, "Required").max(40, "Max. 40 characters");
+export const passwordSchema = z.string().min(10, "Min. 10 characters");
 
 export class FriendlyError extends Error {}
 
@@ -26,7 +26,7 @@ export async function signUp(input: { username: string; displayName: string; ava
   const username = usernameSchema.parse(input.username);
   const displayName = displayNameSchema.parse(input.displayName);
   passwordSchema.parse(input.password);
-  if (!(await isUsernameAvailable(username))) throw new FriendlyError("That username is taken.");
+  if (!(await isUsernameAvailable(username))) throw new FriendlyError("Username taken.");
 
   const secret = newSecretKey(s);
   const identity = identityFromSecret(s, secret);
@@ -37,7 +37,7 @@ export async function signUp(input: { username: string; displayName: string; ava
 
   const sb = supabase();
   const { data, error } = await sb.auth.signUp({ email: loginEmail(loginId), password: loginPassword });
-  if (error || !data.session) throw new FriendlyError(error?.message ?? "Sign-up failed. Please try again.");
+  if (error || !data.session) throw new FriendlyError(error?.message ?? "Sign-up failed.");
   const userId = data.session.user.id;
 
   const { error: e2 } = await sb.rpc("create_account", {
@@ -55,7 +55,7 @@ export async function signUp(input: { username: string; displayName: string; ava
   });
   if (e2) {
     await sb.auth.signOut();
-    throw new FriendlyError(e2.message.includes("profiles_username_key") ? "That username was just taken." : e2.message);
+    throw new FriendlyError(e2.message.includes("profiles_username_key") ? "Username taken." : e2.message);
   }
   await saveSecretKey(userId, secret);
   return userId;
@@ -68,7 +68,7 @@ export async function signIn(rawUsername: string, password: string) {
   const info = (must(await sb.rpc("login_info", { username })) as
     | { login_id: string; pw_salt: string; pw_ops: number; pw_mem: number }[]
     | null)?.[0];
-  if (!info) throw new FriendlyError("That username and password don't match.");
+  if (!info) throw new FriendlyError("Wrong username or password.");
 
   const { loginPassword, wrapKey } = passwordKeys(s, password, {
     salt: b64.dec(s, info.pw_salt),
@@ -77,8 +77,8 @@ export async function signIn(rawUsername: string, password: string) {
   });
   const { data, error } = await sb.auth.signInWithPassword({ email: loginEmail(info.login_id), password: loginPassword });
   if (error || !data.session) {
-    if (error?.status === 429) throw new FriendlyError("Too many tries. Wait a minute and try again.");
-    throw new FriendlyError("That username and password don't match.");
+    if (error?.status === 429) throw new FriendlyError("Too many attempts. Try later.");
+    throw new FriendlyError("Wrong username or password.");
   }
   const acct = must(
     await sb.from("accounts").select("wrapped_secret, wrapped_nonce").eq("user_id", data.session.user.id).single(),
@@ -101,7 +101,7 @@ export async function changePassword(userId: string, current: string, next: stri
     const { wrapKey } = passwordKeys(s, current, { salt: b64.dec(s, acct.pw_salt), ops: acct.pw_ops, mem: acct.pw_mem });
     secret = unwrapSecret(s, acct.wrapped_secret, acct.wrapped_nonce, wrapKey);
   } catch {
-    throw new FriendlyError("Your current password isn't right.");
+    throw new FriendlyError("Wrong current password.");
   }
   const params = newPwParams(s);
   const { loginPassword, wrapKey } = passwordKeys(s, next, params);

@@ -5,7 +5,7 @@ import { entryContent, type EntryContent } from "@/lib/crypto/entry";
 import { useDeleteEntry, useSaveEntry, type Entry } from "@/lib/data/hooks";
 import { Button } from "./Button";
 import { Sheet } from "./Sheet";
-import { Field, Input, LockIcon, TextArea } from "./ui";
+import { Field, Input, TextArea } from "./ui";
 
 /** Log a read (new) or edit one of today's entries. */
 export function LogSheet({
@@ -58,11 +58,11 @@ function EntryForm({
         next[k] ??=
           k === "title"
             ? title.trim()
-              ? "At most 200 characters"
-              : "Give it a title"
+              ? "Max. 200 characters"
+              : "Required"
             : k === "url"
-              ? "Use a full http:// or https:// link"
-              : "At most 500 characters";
+              ? "Invalid link"
+              : "Max. 500 characters";
       }
       setErrors(next);
       return;
@@ -73,7 +73,7 @@ function EntryForm({
       onDone();
       onSaved?.(r.created);
     } catch (err) {
-      setErrors({ form: err instanceof Error ? err.message : "Couldn't save. Check your connection." });
+      setErrors({ form: err instanceof Error ? err.message : "Save failed." });
     }
   }
 
@@ -83,23 +83,22 @@ function EntryForm({
       await del.mutateAsync(editing.id);
       onDone();
     } catch (err) {
-      setErrors({ form: err instanceof Error ? err.message : "Couldn't delete." });
+      setErrors({ form: err instanceof Error ? err.message : "Delete failed." });
     }
   }
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-4" noValidate>
-      <Field label="Title" error={errors.title} hint={`${title.length}/200`}>
+      <Field label="Title" error={errors.title}>
         <Input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           maxLength={200}
-          placeholder="What did you read?"
           autoComplete="off"
           required
         />
       </Field>
-      <Field label="Link (optional)" error={errors.url}>
+      <Field label="Link" error={errors.url}>
         <Input
           value={url}
           onChange={(e) => setUrl(e.target.value)}
@@ -110,12 +109,11 @@ function EntryForm({
           autoComplete="off"
         />
       </Field>
-      <Field label="Notes (optional)" error={errors.notes} hint={`${notes.length}/500`}>
+      <Field label="Notes" error={errors.notes}>
         <TextArea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           maxLength={500}
-          placeholder="Your own thoughts"
           onKeyDown={(e) => {
             // Enter saves on computers; Shift+Enter adds a line.
             if (e.key === "Enter" && !e.shiftKey && window.matchMedia("(min-width: 1024px)").matches) {
@@ -131,7 +129,7 @@ function EntryForm({
         </p>
       )}
       <Button type="submit" disabled={save.isPending}>
-        {save.isPending ? "Saving…" : "Save"}
+        Save
       </Button>
       {editing && (
         <button
@@ -140,10 +138,9 @@ function EntryForm({
           disabled={del.isPending}
           className="min-h-11 rounded-xl font-extrabold text-danger-text hover:bg-danger/10"
         >
-          {del.isPending ? "Deleting…" : "Delete this read"}
+          Delete
         </button>
       )}
-      <p className="text-center text-xs text-text-muted"><LockIcon /> Encrypted on this device. Only you and your friends can read it.</p>
     </form>
   );
 }

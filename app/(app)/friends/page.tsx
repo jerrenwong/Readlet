@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/Button";
-import { Cat, CatAvatar } from "@/components/Cat";
+import { CatAvatar } from "@/components/Cat";
 import { UserCard } from "@/components/InviteCard";
 import { StreakBadge } from "@/components/StreakFlame";
 import { Card, Input, Spinner } from "@/components/ui";
@@ -31,7 +31,7 @@ export default function FriendsPage() {
   async function copy() {
     try {
       if (navigator.share && /Mobi|Android|iPhone/.test(navigator.userAgent)) {
-        await navigator.share({ title: "Readlet", text: "Read with me on Readlet!", url: link });
+        await navigator.share({ title: "Readlet", url: link });
       } else {
         await navigator.clipboard.writeText(link);
         setCopied(true);
@@ -72,19 +72,18 @@ export default function FriendsPage() {
       </Card>
 
       <Card>
-        <h2 className="mb-1 text-lg">Your invite link</h2>
-        <p className="mb-3 text-sm text-text-muted">Anyone who opens it can send you a friend request.</p>
+        <h2 className="mb-3 text-lg">Invite link</h2>
         <div className="flex items-center gap-2">
           <code className="min-w-0 flex-1 truncate rounded-xl bg-background px-3 py-2.5 text-sm">{link}</code>
           <Button variant="secondary" size="sm" onClick={copy}>
-            {copied ? "Copied!" : "Copy"}
+            {copied ? "Copied" : "Copy"}
           </Button>
         </div>
       </Card>
 
       {incoming.length > 0 && (
         <section className="flex flex-col gap-2">
-          <h2 className="text-lg">Requests for you</h2>
+          <h2 className="text-lg">Requests</h2>
           {incoming.map((r) => (
             <RequestRow key={r.other.id} r={r} />
           ))}
@@ -100,13 +99,10 @@ export default function FriendsPage() {
       )}
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-lg">Your friends</h2>
+        <h2 className="text-lg">Friends</h2>
         {friends.isLoading && <Spinner />}
         {friends.data?.length === 0 && (
-          <Card className="flex items-center gap-4">
-            <Cat state="waving" size={80} />
-            <p>No friends yet. Search a username above or share your invite link.</p>
-          </Card>
+          <p className="text-text-muted">None yet</p>
         )}
         {friends.data?.map((f) => (
           <Link
@@ -118,7 +114,7 @@ export default function FriendsPage() {
             <span className="min-w-0 flex-1">
               <span className="block truncate font-extrabold">{f.display_name}</span>
               <span className={`block text-sm ${f.logged_today ? "text-accent-text" : "text-text-muted"}`}>
-                {f.logged_today ? "✓ Read today" : "Not yet today"}
+                {f.logged_today ? "✓ Today" : "–"}
               </span>
             </span>
             <StreakBadge n={f.current_streak} lit={f.logged_today} />

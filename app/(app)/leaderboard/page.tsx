@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ButtonLink } from "@/components/Button";
 import { CatAvatar } from "@/components/Cat";
 import { StreakBadge } from "@/components/StreakFlame";
-import { Card, ErrorNote, Spinner } from "@/components/ui";
+import { ErrorNote, Spinner } from "@/components/ui";
 import { useLeaderboard } from "@/lib/data/hooks";
 import { useReady } from "@/lib/session/SessionProvider";
 import { daysBetween, localDate, weekStart, addDays } from "@/lib/streaks";
@@ -22,11 +22,11 @@ export default function LeaderboardPage() {
       <header>
         <h1 className="text-2xl">This week</h1>
         <p className="text-text-muted">
-          Resets in {left} {left === 1 ? "day" : "days"} · up to 3 reads a day count
+          Resets in {left} {left === 1 ? "day" : "days"}
         </p>
       </header>
       {board.isLoading && <Spinner />}
-      {board.error && <ErrorNote>Couldn&apos;t load the leaderboard.</ErrorNote>}
+      {board.error && <ErrorNote>Couldn&apos;t load.</ErrorNote>}
       {board.data && (
         <ol className="flex flex-col gap-2">
           {board.data.map((r) => {
@@ -59,10 +59,9 @@ export default function LeaderboardPage() {
         </ol>
       )}
       {board.data && board.data.length < 2 && (
-        <Card className="text-center">
-          <p className="mb-3">A leaderboard of one is lonely. Add some friends!</p>
-          <ButtonLink href="/friends">Find friends</ButtonLink>
-        </Card>
+        <ButtonLink href="/friends" variant="secondary">
+          Add friends
+        </ButtonLink>
       )}
     </div>
   );

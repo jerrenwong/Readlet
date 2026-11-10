@@ -64,7 +64,7 @@ export function ProfileView({
       </Card>
       <section className="flex flex-col gap-3" aria-label="History">
         <h2 className="text-lg">History</h2>
-        {byDay.length === 0 && <p className="text-text-muted">No reads yet.</p>}
+        {byDay.length === 0 && <p className="text-text-muted">None yet</p>}
         {byDay.map(([date, list]) => (
           <div key={date} className="flex flex-col gap-2">
             <h3 className="text-sm text-text-muted">{dayLabel(date, today)}</h3>

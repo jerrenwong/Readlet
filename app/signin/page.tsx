@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/Button";
-import { Cat } from "@/components/Cat";
 import { PublicPage } from "@/components/PublicPage";
 import { Field, Input } from "@/components/ui";
 import { FriendlyError, signIn } from "@/lib/session/auth";
@@ -20,7 +19,7 @@ export default function SignInPage() {
 
   async function submit(e: FormEvent) {
     e.preventDefault();
-    if (!username.trim() || !password) return setError("Enter your username and password.");
+    if (!username.trim() || !password) return setError("Enter username and password.");
     setBusy(true);
     setError(null);
     try {
@@ -28,7 +27,7 @@ export default function SignInPage() {
       await reload();
       router.replace("/today");
     } catch (err) {
-      setError(err instanceof FriendlyError ? err.message : "Couldn't sign in. Check your connection and try again.");
+      setError(err instanceof FriendlyError ? err.message : "Sign-in failed.");
       setBusy(false);
     }
   }
@@ -38,10 +37,7 @@ export default function SignInPage() {
       <Link href="/welcome" className="mb-4 min-h-11 self-start font-extrabold text-text-muted">
         ← Back
       </Link>
-      <div className="mb-4 flex items-center gap-3">
-        <Cat state="reading" size={80} />
-        <h1 className="text-3xl">Welcome back</h1>
-      </div>
+      <h1 className="mb-6 text-3xl">Sign in</h1>
       <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
         <Field label="Username">
           <Input
@@ -62,9 +58,8 @@ export default function SignInPage() {
           </p>
         )}
         <Button type="submit" disabled={busy}>
-          {busy ? "Unlocking…" : "Sign in"}
+          {busy ? "Signing in…" : "Sign in"}
         </Button>
-        <p className="text-center text-sm text-text-muted">Forgotten passwords can&apos;t be reset, because only you hold the key.</p>
       </form>
     </PublicPage>
   );

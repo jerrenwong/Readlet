@@ -29,15 +29,15 @@ test("friends see each other's encrypted reads", async ({ browser }, info) => {
   const a = await (await browser.newContext()).newPage();
   await signUp(a, alice.u, "Alice", alice.pw);
   await logRead(a, `Middlemarch ${t}`);
-  await expect(a.getByText("Nice! Day 1.")).toBeVisible();
+  await expect(a.locator(".num").first()).toHaveText("1");
 
   const b = await (await browser.newContext()).newPage();
   await signUp(b, bob.u, "Bob", bob.pw);
   await b.goto("/friends");
   await b.getByLabel("Exact username").fill(alice.u);
   await b.getByRole("button", { name: "Find" }).click();
-  await b.getByRole("button", { name: "Send friend request" }).click();
-  await expect(b.getByText("Request sent").first()).toBeVisible();
+  await b.getByRole("button", { name: "Add friend" }).click();
+  await expect(b.getByText("Sent", { exact: true }).first()).toBeVisible();
 
   await a.goto("/friends");
   await a.getByRole("button", { name: "Accept" }).click();

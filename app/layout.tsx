@@ -11,7 +11,7 @@ const nunito = Nunito({
 
 export const metadata: Metadata = {
   title: "Readlet",
-  description: "Log what you read each day, keep your streak, and see your friends' reads.",
+  description: "Daily reading streaks with friends.",
   appleWebApp: { capable: true, title: "Readlet", statusBarStyle: "default" },
   referrer: "no-referrer",
 };

@@ -110,5 +110,5 @@ export async function myWritingKey(me: string, identity: IdentityKeys): Promise<
     }
     await syncKeys(me, identity);
   }
-  throw new Error("Couldn't set up your reading key. Please reload.");
+  throw new Error("Key setup failed. Reload.");
 }

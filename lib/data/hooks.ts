@@ -280,8 +280,8 @@ export function useFriendActions() {
       const { error } = await supabase()
         .from("friendships")
         .insert({ ...pair(userId, otherId), requested_by: userId, status: "pending" });
-      if (error?.message.includes("friend_request_limit")) throw new Error("That's 20 requests today. Try again tomorrow.");
-      if (error?.code === "23505") throw new Error("There's already a request between you two.");
+      if (error?.message.includes("friend_request_limit")) throw new Error("Daily request limit reached.");
+      if (error?.code === "23505") throw new Error("Request already exists.");
       if (error) throw new Error(error.message);
     },
     onSuccess: invalidate,
