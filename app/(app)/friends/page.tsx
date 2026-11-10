@@ -1,0 +1,168 @@
+"use client";
+
+import Link from "next/link";
+import { useState, type FormEvent } from "react";
+import { Button } from "@/components/Button";
+import { Cat, CatAvatar } from "@/components/Cat";
+import { UserCard } from "@/components/InviteCard";
+import { StreakBadge } from "@/components/StreakFlame";
+import { Card, Input, Spinner } from "@/components/ui";
+import { useFriendActions, useFriends, useRequests, type Request } from "@/lib/data/hooks";
+import { useReady } from "@/lib/session/SessionProvider";
+
+export default function FriendsPage() {
+  const { profile } = useReady();
+  const friends = useFriends();
+  const requests = useRequests();
+  const [query, setQuery] = useState("");
+  const [searched, setSearched] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const link = typeof window === "undefined" ? "" : `${window.location.origin}/invite/${profile.username}`;
+
+  const incoming = requests.data?.filter((r) => r.incoming) ?? [];
+  const outgoing = requests.data?.filter((r) => !r.incoming) ?? [];
+
+  function search(e: FormEvent) {
+    e.preventDefault();
+    const u = query.trim().toLowerCase().replace(/^@/, "");
+    setSearched(u || null);
+  }
+
+  async function copy() {
+    try {
+      if (navigator.share && /Mobi|Android|iPhone/.test(navigator.userAgent)) {
+        await navigator.share({ title: "Readlet", text: "Read with me on Readlet!", url: link });
+      } else {
+        await navigator.clipboard.writeText(link);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
+    } catch {
+      /* share cancelled */
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-5">
+      <h1 className="text-2xl">Friends</h1>
+
+      <Card>
+        <form onSubmit={search} className="flex gap-2" role="search">
+          <label className="sr-only" htmlFor="find">
+            Exact username
+          </label>
+          <Input
+            id="find"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Exact username"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+          />
+          <Button type="submit" className="!px-5">
+            Find
+          </Button>
+        </form>
+        {searched && (
+          <div className="mt-3">
+            <UserCard username={searched} />
+          </div>
+        )}
+      </Card>
+
+      <Card>
+        <h2 className="mb-1 text-lg">Your invite link</h2>
+        <p className="mb-3 text-sm text-text-muted">Anyone who opens it can send you a friend request.</p>
+        <div className="flex items-center gap-2">
+          <code className="min-w-0 flex-1 truncate rounded-xl bg-background px-3 py-2.5 text-sm">{link}</code>
+          <Button variant="secondary" className="!min-h-11 !px-4 !text-base" onClick={copy}>
+            {copied ? "Copied!" : "Copy"}
+          </Button>
+        </div>
+      </Card>
+
+      {incoming.length > 0 && (
+        <section className="flex flex-col gap-2">
+          <h2 className="text-lg">Requests for you</h2>
+          {incoming.map((r) => (
+            <RequestRow key={r.other.id} r={r} />
+          ))}
+        </section>
+      )}
+      {outgoing.length > 0 && (
+        <section className="flex flex-col gap-2">
+          <h2 className="text-lg">Sent</h2>
+          {outgoing.map((r) => (
+            <RequestRow key={r.other.id} r={r} />
+          ))}
+        </section>
+      )}
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg">Your friends</h2>
+        {friends.isLoading && <Spinner />}
+        {friends.data?.length === 0 && (
+          <Card className="flex items-center gap-4">
+            <Cat state="waving" size={80} />
+            <p>No friends yet. Search a username above or share your invite link.</p>
+          </Card>
+        )}
+        {friends.data?.map((f) => (
+          <Link
+            key={f.id}
+            href={`/u/${f.username}`}
+            className="flex min-h-16 items-center gap-3 rounded-[var(--radius-card)] bg-surface p-3 shadow-sm"
+          >
+            <CatAvatar avatar={f.avatar} size={44} />
+            <span className="min-w-0 flex-1">
+              <span className="block truncate font-extrabold">{f.display_name}</span>
+              <span className={`block text-sm ${f.logged_today ? "text-accent-text" : "text-text-muted"}`}>
+                {f.logged_today ? "✓ Read today" : "Not yet today"}
+              </span>
+            </span>
+            <StreakBadge n={f.current_streak} lit={f.logged_today} />
+          </Link>
+        ))}
+      </section>
+    </div>
+  );
+}
+
+function RequestRow({ r }: { r: Request }) {
+  const { accept, remove } = useFriendActions();
+  const busy = accept.isPending || remove.isPending;
+  return (
+    <div className="flex items-center gap-3 rounded-[var(--radius-card)] bg-surface p-3 shadow-sm">
+      <CatAvatar avatar={r.other.avatar} size={44} />
+      <span className="min-w-0 flex-1">
+        <span className="block truncate font-extrabold">{r.other.display_name}</span>
+        <span className="block truncate text-sm text-text-muted">@{r.other.username}</span>
+      </span>
+      {r.incoming ? (
+        <>
+          <Button className="!min-h-11 !px-4 !text-base" disabled={busy} onClick={() => accept.mutate(r.other.id)}>
+            Accept
+          </Button>
+          <Button
+            variant="secondary"
+            className="!min-h-11 !px-3 !text-base"
+            disabled={busy}
+            onClick={() => remove.mutate(r.other.id)}
+          >
+            Decline
+          </Button>
+        </>
+      ) : (
+        <button
+          type="button"
+          className="min-h-11 rounded-xl px-3 text-text-muted hover:bg-background"
+          disabled={busy}
+          onClick={() => remove.mutate(r.other.id)}
+        >
+          Cancel
+        </button>
+      )}
+    </div>
+  );
+}
