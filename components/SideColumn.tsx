@@ -28,9 +28,9 @@ export function SideColumn() {
           All
         </Link>
       </Card>
-      <Card>
-        <h2 className="mb-3 text-lg">Friends</h2>
-        {friends.data?.length ? (
+      {!!friends.data?.length && (
+        <Card>
+          <h2 className="mb-3 text-lg">Friends</h2>
           <ul className="flex flex-col gap-2">
             {friends.data.map((f) => (
               <li key={f.id}>
@@ -42,12 +42,8 @@ export function SideColumn() {
               </li>
             ))}
           </ul>
-        ) : (
-          <Link href="/friends" className="font-extrabold text-accent-text">
-            Add friends
-          </Link>
-        )}
       </Card>
+      )}
     </div>
   );
 }

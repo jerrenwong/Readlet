@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { ButtonLink } from "@/components/Button";
 import { StreakBadge } from "@/components/StreakFlame";
 import { ErrorNote, Spinner } from "@/components/ui";
 import { useLeaderboard } from "@/lib/data/hooks";
@@ -59,11 +58,6 @@ export default function LeaderboardPage() {
             );
           })}
         </ol>
-      )}
-      {board.data && board.data.length < 2 && (
-        <ButtonLink href="/friends" variant="secondary">
-          Add friends
-        </ButtonLink>
       )}
     </div>
   );

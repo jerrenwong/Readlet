@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
-import { ButtonLink } from "@/components/Button";
 import { EntryCard } from "@/components/EntryCard";
 import { Card, ErrorNote, Spinner } from "@/components/ui";
 import { useFeed, useFriends, type FeedItem } from "@/lib/data/hooks";
@@ -41,7 +40,6 @@ export default function FeedPage() {
       {feed.items && feed.items.length === 0 && (
         <Card className="flex flex-col items-center gap-3 text-center">
           <p className="font-extrabold">No reads yet</p>
-          {!friends.data?.length && <ButtonLink href="/friends">Add friends</ButtonLink>}
         </Card>
       )}
       {groups.map(([date, items]) => (

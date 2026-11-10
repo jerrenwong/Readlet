@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/Button";
@@ -12,7 +11,7 @@ import { LogSheet } from "@/components/LogSheet";
 import { StreakFlame } from "@/components/StreakFlame";
 import { Card, Spinner } from "@/components/ui";
 import { WeekStrip } from "@/components/WeekStrip";
-import { useFriends, useUserEntries, type Entry } from "@/lib/data/hooks";
+import { useUserEntries, type Entry } from "@/lib/data/hooks";
 import { useReady } from "@/lib/session/SessionProvider";
 import { computeStreak, isMilestone, localDate } from "@/lib/streaks";
 
@@ -34,7 +33,6 @@ export default function TodayPage() {
   const { userId, profile } = useReady();
   const today = useToday(profile.timezone);
   const { entries, isLoading } = useUserEntries(userId);
-  const friends = useFriends();
   const [sheet, setSheet] = useState<{ open: boolean; editing: Entry | null }>({ open: false, editing: null });
   const [milestone, setMilestone] = useState<number | null>(null);
 
@@ -98,11 +96,6 @@ export default function TodayPage() {
         ))}
       </section>
 
-      {friends.data && friends.data.length === 0 && (
-        <Link href="/friends" className="min-h-11 self-center font-extrabold text-accent-text underline">
-          Add friends
-        </Link>
-      )}
 
       <LogSheet
         open={sheet.open}
