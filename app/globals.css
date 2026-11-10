@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+/* Spec color tokens (lib/theme/tokens.ts is the tested source of truth). Light theme only in v1. */
+@theme {
+  --color-primary: #e8701f;
+  --color-primary-edge: #b9520f;
+  --color-flame: #ff6b2c;
+  --color-flame-off: #d8d0c9;
+  --color-accent: #1f9e8c;
+  --color-accent-text: #197e70;
+  --color-background: #fff7ee;
+  --color-surface: #ffffff;
+  --color-text: #3b2f2a;
+  --color-text-muted: #7a6a61;
+  --color-danger: #ef5a50;
+  --color-danger-text: #dc2114;
+
+  --font-sans: var(--font-nunito), ui-rounded, system-ui, sans-serif;
+  --radius-card: 16px;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+h1,
+h2,
+h3,
+.num {
+  font-weight: 800;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
