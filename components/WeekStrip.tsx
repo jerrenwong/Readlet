@@ -16,6 +16,7 @@ export function WeekStrip({ days, today }: { days: ReadonlySet<string>; today: s
           <li key={d} className="flex flex-col items-center gap-1">
             <span className={`text-xs ${isToday ? "font-extrabold text-text" : "text-text-muted"}`}>{d}</span>
             <span
+              role="img"
               className={`flex size-9 items-center justify-center rounded-full text-lg font-extrabold ${
                 done ? "bg-accent text-white" : future ? "border-2 border-dashed border-flame-off" : "bg-flame-off/50"
               } ${isToday ? "ring-2 ring-primary ring-offset-2 ring-offset-surface" : ""}`}

@@ -46,7 +46,7 @@ export default function LeaderboardPage() {
                   </span>
                   <span className="min-w-0 flex-1 truncate font-extrabold">
                     {r.display_name}
-                    {me && <span className="font-semibold text-text-muted"> (you)</span>}
+                    {me && <span className="font-semibold"> (you)</span>}
                   </span>
                   <StreakBadge n={r.current_streak} />
                   <span className="num w-10 text-right text-2xl" aria-label={`${r.score} points`}>

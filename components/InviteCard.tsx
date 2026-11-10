@@ -73,7 +73,7 @@ export function UserCard({ username, onDone }: { username: string; onDone?: () =
         <span className="font-extrabold text-accent-text">Friends ✓</span>
       ) : req?.incoming ? (
         <Button
-          className="!min-h-11 !px-4 !text-base"
+          size="sm"
           disabled={accept.isPending}
           onClick={() => accept.mutate(u.id, { onSuccess: onDone, onError: (e) => setError(e.message) })}
         >
@@ -83,7 +83,7 @@ export function UserCard({ username, onDone }: { username: string; onDone?: () =
         <span className="text-text-muted">Request sent</span>
       ) : (
         <Button
-          className="!min-h-11 !px-4 !text-base"
+          size="sm"
           disabled={send.isPending}
           onClick={() => send.mutate(u.id, { onSuccess: onDone, onError: (e) => setError(e.message) })}
         >

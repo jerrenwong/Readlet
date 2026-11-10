@@ -47,7 +47,7 @@ function Shell({ children }: { children: ReactNode }) {
               href={t.href}
               aria-current={active ? "page" : undefined}
               className={`relative flex min-h-14 flex-col items-center justify-center gap-0.5 text-xs lg:min-h-12 lg:flex-row lg:justify-start lg:gap-3 lg:rounded-2xl lg:px-4 lg:text-base ${
-                active ? "font-extrabold text-primary-edge lg:bg-primary/10" : "text-text-muted hover:text-text"
+                active ? "font-extrabold text-primary-edge lg:bg-surface lg:shadow-sm" : "text-text-muted hover:text-text"
               }`}
             >
               <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" className="fill-current">

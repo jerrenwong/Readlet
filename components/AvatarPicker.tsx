@@ -22,7 +22,7 @@ export function AvatarPicker({ value, onChange }: { value: string; onChange: (id
               className="sr-only"
             />
             <CatAvatar avatar={a.id} size={52} />
-            <span className="text-xs text-text-muted">{a.label}</span>
+            <span className={`text-xs ${value === a.id ? "text-text" : "text-text-muted"}`}>{a.label}</span>
           </label>
         ))}
       </div>

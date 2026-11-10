@@ -60,7 +60,7 @@ export default function FriendsPage() {
             autoCorrect="off"
             spellCheck={false}
           />
-          <Button type="submit" className="!px-5">
+          <Button type="submit" size="sm" className="!min-h-12 !px-5">
             Find
           </Button>
         </form>
@@ -76,7 +76,7 @@ export default function FriendsPage() {
         <p className="mb-3 text-sm text-text-muted">Anyone who opens it can send you a friend request.</p>
         <div className="flex items-center gap-2">
           <code className="min-w-0 flex-1 truncate rounded-xl bg-background px-3 py-2.5 text-sm">{link}</code>
-          <Button variant="secondary" className="!min-h-11 !px-4 !text-base" onClick={copy}>
+          <Button variant="secondary" size="sm" onClick={copy}>
             {copied ? "Copied!" : "Copy"}
           </Button>
         </div>
@@ -141,12 +141,12 @@ function RequestRow({ r }: { r: Request }) {
       </span>
       {r.incoming ? (
         <>
-          <Button className="!min-h-11 !px-4 !text-base" disabled={busy} onClick={() => accept.mutate(r.other.id)}>
+          <Button size="sm" disabled={busy} onClick={() => accept.mutate(r.other.id)}>
             Accept
           </Button>
           <Button
             variant="secondary"
-            className="!min-h-11 !px-3 !text-base"
+            size="sm"
             disabled={busy}
             onClick={() => remove.mutate(r.other.id)}
           >

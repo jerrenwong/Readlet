@@ -44,12 +44,12 @@ export function FriendProfilePage() {
               <span className="text-sm">Remove {user.data.display_name}?</span>
               <Button
                 variant="danger"
-                className="!min-h-11 !px-4 !text-base"
+                size="sm"
                 onClick={() => remove.mutate(user.data!.id, { onSuccess: () => router.push("/friends") })}
               >
                 Remove
               </Button>
-              <Button variant="secondary" className="!min-h-11 !px-4 !text-base" onClick={() => setConfirm(false)}>
+              <Button variant="secondary" size="sm" onClick={() => setConfirm(false)}>
                 Keep
               </Button>
             </div>
