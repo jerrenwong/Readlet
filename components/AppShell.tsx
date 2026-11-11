@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, type ReactNode } from "react";
-import { useKeySync, useRequests } from "@/lib/data/hooks";
+import { useRequests } from "@/lib/data/hooks";
 import { useSession } from "@/lib/session/SessionProvider";
 import { Spinner } from "./ui";
 import { SideColumn } from "./SideColumn";
@@ -38,7 +38,6 @@ export function AppShell({ children }: { children: ReactNode }) {
 
 function Shell({ children }: { children: ReactNode }) {
   const path = usePathname();
-  useKeySync();
   const requests = useRequests();
   const pending = requests.data?.some((r) => r.incoming) ?? false;
   const wide = path.startsWith("/today") || path.startsWith("/feed");

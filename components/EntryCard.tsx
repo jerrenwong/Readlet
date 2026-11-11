@@ -1,6 +1,5 @@
 import type { Entry } from "@/lib/data/hooks";
 import { StreakBadge } from "./StreakFlame";
-import { LockIcon } from "./ui";
 
 function host(url: string) {
   try {
@@ -22,7 +21,7 @@ export function EntryCard({
   streak?: number;
   onEdit?: () => void;
 }) {
-  const c = entry.content;
+  const c = entry;
   return (
     <article className="rounded-[var(--radius-card)] bg-surface p-4 shadow-sm">
       {author && (
@@ -36,7 +35,7 @@ export function EntryCard({
           </time>
         </header>
       )}
-      {c ? (
+      {(
         <div className="flex items-start gap-3">
           <div className="min-w-0 flex-1">
             <h3 className="text-lg leading-snug break-words">
@@ -66,8 +65,6 @@ export function EntryCard({
             </button>
           )}
         </div>
-      ) : (
-        <p className="text-text-muted italic"><LockIcon /> Couldn&apos;t unlock this entry</p>
       )}
     </article>
   );

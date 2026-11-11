@@ -6,14 +6,23 @@ import { useState, type FormEvent } from "react";
 import { Button } from "@/components/Button";
 import { PublicPage } from "@/components/PublicPage";
 import { Field, Input } from "@/components/ui";
-import { displayNameSchema, FriendlyError, isUsernameAvailable, passwordSchema, signUp, usernameSchema } from "@/lib/session/auth";
+import {
+  displayNameSchema,
+  emailSchema,
+  FriendlyError,
+  isUsernameAvailable,
+  passwordSchema,
+  signUp,
+  usernameSchema,
+} from "@/lib/session/auth";
 import { useSession } from "@/lib/session/SessionProvider";
 
-type Errors = Partial<Record<"username" | "displayName" | "password" | "form", string>>;
+type Errors = Partial<Record<"email" | "username" | "displayName" | "password" | "form", string>>;
 
 export default function SignUpPage() {
   const router = useRouter();
   const { reload } = useSession();
+  const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [password, setPassword] = useState("");
@@ -31,6 +40,7 @@ export default function SignUpPage() {
   async function submit(e: FormEvent) {
     e.preventDefault();
     const next: Errors = {};
+    if (!emailSchema.safeParse(email).success) next.email = "Invalid email";
     const u = usernameSchema.safeParse(username);
     if (!u.success) next.username = u.error.issues[0].message;
     const d = displayNameSchema.safeParse(displayName);
@@ -40,7 +50,7 @@ export default function SignUpPage() {
     if (Object.keys(next).length) return;
     setBusy(true);
     try {
-      await signUp({ username, displayName, password });
+      await signUp({ email, username, displayName, password });
       await reload();
       router.replace("/today");
     } catch (err) {
@@ -61,6 +71,9 @@ export default function SignUpPage() {
       </Link>
       <h1 className="mb-6 text-3xl">Sign up</h1>
       <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
+        <Field label="Email" error={errors.email}>
+          <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" inputMode="email" />
+        </Field>
         <Field label="Username" error={errors.username} hint="3–20 characters: a–z, 0–9, _">
           <Input
             value={username}
@@ -79,7 +92,7 @@ export default function SignUpPage() {
         <Field label="Display name" error={errors.displayName}>
           <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} maxLength={40} autoComplete="nickname" />
         </Field>
-        <Field label="Password" error={errors.password} hint="Min. 10 characters. Can't be reset.">
+        <Field label="Password" error={errors.password} hint="Min. 10 characters">
           <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
         </Field>
         {errors.form && (

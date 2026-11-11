@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { entryContent, type EntryContent } from "@/lib/crypto/entry";
+import { useRef, useState, type FormEvent } from "react";
+import { entrySchema } from "@/lib/entry";
 import { useDeleteEntry, useSaveEntry, type Entry } from "@/lib/data/hooks";
+import { supabase } from "@/lib/supabase/client";
 import { Button } from "./Button";
 import { Sheet } from "./Sheet";
 import { Field, Input, TextArea } from "./ui";
@@ -21,11 +22,24 @@ export function LogSheet({
 }) {
   return (
     <Sheet open={open} onClose={onClose} title={editing ? "Edit read" : "Log a read"}>
-      {/* Remount per entry so the form starts from that entry's values. */}
       <EntryForm key={editing?.id ?? "new"} editing={editing} onDone={onClose} onSaved={onSaved} />
     </Sheet>
   );
 }
+
+async function fetchTitle(url: string): Promise<string | null> {
+  const { data } = await supabase().auth.getSession();
+  const token = data.session?.access_token;
+  if (!token) return null;
+  try {
+    const res = await fetch(`/api/title?url=${encodeURIComponent(url)}`, { headers: { authorization: `Bearer ${token}` } });
+    return res.ok ? ((await res.json()) as { title: string | null }).title : null;
+  } catch {
+    return null;
+  }
+}
+
+type Errors = Partial<Record<"title" | "url" | "notes" | "form", string>>;
 
 function EntryForm({
   editing,
@@ -36,33 +50,34 @@ function EntryForm({
   onDone: () => void;
   onSaved?: (created: boolean) => void;
 }) {
-  const [title, setTitle] = useState(editing?.content?.title ?? "");
-  const [url, setUrl] = useState(editing?.content?.url ?? "");
-  const [notes, setNotes] = useState(editing?.content?.notes ?? "");
-  const [errors, setErrors] = useState<Partial<Record<keyof EntryContent | "form", string>>>({});
+  const [title, setTitle] = useState(editing?.title ?? "");
+  const [url, setUrl] = useState(editing?.url ?? "");
+  const [notes, setNotes] = useState(editing?.notes ?? "");
+  const [errors, setErrors] = useState<Errors>({});
+  const [suggesting, setSuggesting] = useState(false);
+  const titleEdited = useRef(!!editing);
+  const lastLooked = useRef("");
   const save = useSaveEntry();
   const del = useDeleteEntry();
 
+  async function suggest(raw: string) {
+    const u = raw.trim();
+    if (titleEdited.current || u === lastLooked.current || !/^https?:\/\/\S+\.\S+/i.test(u)) return;
+    lastLooked.current = u;
+    setSuggesting(true);
+    const t = await fetchTitle(u);
+    setSuggesting(false);
+    if (t && !titleEdited.current) setTitle(t);
+  }
+
   async function submit(e: FormEvent) {
     e.preventDefault();
-    const parsed = entryContent.safeParse({
-      v: 1,
-      title: title.trim(),
-      url: url.trim() || undefined,
-      notes: notes.trim() || undefined,
-    });
+    const parsed = entrySchema.safeParse({ title, url: url.trim() || undefined, notes: notes.trim() || undefined });
     if (!parsed.success) {
-      const next: typeof errors = {};
+      const next: Errors = {};
       for (const issue of parsed.error.issues) {
-        const k = issue.path[0] as keyof EntryContent;
-        next[k] ??=
-          k === "title"
-            ? title.trim()
-              ? "Max. 200 characters"
-              : "Required"
-            : k === "url"
-              ? "Invalid link"
-              : "Max. 500 characters";
+        const k = issue.path[0] as "title" | "url" | "notes";
+        next[k] ??= k === "title" ? (title.trim() ? "Max. 200 characters" : "Required") : k === "url" ? "Invalid link" : "Max. 500 characters";
       }
       setErrors(next);
       return;
@@ -89,24 +104,29 @@ function EntryForm({
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-4" noValidate>
-      <Field label="Title" error={errors.title}>
-        <Input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          maxLength={200}
-          autoComplete="off"
-          required
-        />
-      </Field>
       <Field label="Link" error={errors.url}>
         <Input
           value={url}
           onChange={(e) => setUrl(e.target.value)}
+          onPaste={(e) => void suggest(e.clipboardData.getData("text"))}
+          onBlur={(e) => void suggest(e.target.value)}
           maxLength={2000}
           type="url"
           inputMode="url"
           placeholder="https://"
           autoComplete="off"
+        />
+      </Field>
+      <Field label="Title" error={errors.title} hint={suggesting ? "Fetching title…" : undefined}>
+        <Input
+          value={title}
+          onChange={(e) => {
+            titleEdited.current = e.target.value !== "";
+            setTitle(e.target.value);
+          }}
+          maxLength={200}
+          autoComplete="off"
+          required
         />
       </Field>
       <Field label="Notes" error={errors.notes}>
@@ -115,7 +135,6 @@ function EntryForm({
           onChange={(e) => setNotes(e.target.value)}
           maxLength={500}
           onKeyDown={(e) => {
-            // Enter saves on computers; Shift+Enter adds a line.
             if (e.key === "Enter" && !e.shiftKey && window.matchMedia("(min-width: 1024px)").matches) {
               e.preventDefault();
               e.currentTarget.form?.requestSubmit();

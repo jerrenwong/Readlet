@@ -4,6 +4,9 @@ Choices made where the spec was open or needed adjusting. Newest first.
 
 | Date | Decision | Why |
 | --- | --- | --- |
+| 2026-11-11 | **End-to-end encryption removed.** Entries are plain text (`title`, `url`, `notes`) protected by RLS; the admin can read them. Old encrypted accounts were deleted. Rows above about libsodium, keys and placeholder emails no longer apply. | Owner: entry privacy isn't important for now; losing reads on a forgotten password was worse. |
+| 2026-11-11 | Accounts use real email + password; sign in with email (username stays the public handle). Forgot password = Supabase reset email → `/reset`. Profiles are created by a trigger on `auth.users` from sign-up metadata. | Standard recovery. Signing in by username would expose which email belongs to which username. |
+| 2026-11-11 | Pasting a link suggests the title via `/api/title` (signed-in users only; og:title or `<title>`; blocks private IPs, non-http(s), odd ports; 5 s, 256 KB). | Owner asked for title suggestions once privacy was relaxed. |
 | 2026-11-10 | No profile pictures and no cat mascot. `profiles.avatar` is now nullable and unused (drop later). App icon is the streak flame. | Owner's request. |
 | 2026-11-10 | UI copy kept minimal: no taglines, reassurance or hints that restate labels. | Owner's request. |
 | 2026-11-10 | Placeholder login email is `<login_id>@readlet.invalid`. | `.invalid` is reserved and can never receive mail; Supabase accepted it in a sign-up test. |

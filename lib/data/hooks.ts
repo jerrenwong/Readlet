@@ -1,29 +1,24 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getSodium, type Sodium } from "@/lib/crypto/sodium";
-import { decryptEntry, encryptEntry, type EntryContent } from "@/lib/crypto/entry";
+import type { EntryInput } from "@/lib/entry";
 import { must, supabase } from "@/lib/supabase/client";
 import { localDate } from "@/lib/streaks";
 import { useReady, type Profile } from "@/lib/session/SessionProvider";
-import { fetchKeyMap, keyId, myWritingKey, syncKeys, type KeyMap } from "./keys";
 
-export type EntryRow = {
+export type Entry = {
   id: string;
   user_id: string;
   log_date: string;
-  key_version: number;
-  nonce: string;
-  ciphertext: string;
+  title: string;
+  url: string | null;
+  notes: string | null;
   created_at: string;
 };
-export type Entry = Omit<EntryRow, "nonce" | "ciphertext"> & { content: EntryContent | null };
 
-const ENTRY_COLS = "id, user_id, log_date, key_version, nonce, ciphertext, created_at";
+const ENTRY_COLS = "id, user_id, log_date, title, url, notes, created_at";
 
 export const qk = {
-  keys: ["keys"] as const,
   entries: (uid: string) => ["entries", uid] as const,
   feed: ["feed"] as const,
   friends: ["friends"] as const,
@@ -33,35 +28,8 @@ export const qk = {
   user: (username: string) => ["user", username] as const,
 };
 
-function useSodium() {
-  return useQuery({ queryKey: ["sodium"], queryFn: getSodium, staleTime: Infinity });
-}
-
-export function useKeyMap() {
-  const { userId, identity } = useReady();
-  return useQuery({ queryKey: qk.keys, queryFn: () => fetchKeyMap(userId, identity), staleTime: 60_000 });
-}
-
-function decryptAll(s: Sodium | undefined, keys: KeyMap | undefined, rows: EntryRow[] | undefined): Entry[] | undefined {
-  if (!rows) return undefined;
-  return rows.map(({ nonce, ciphertext, ...meta }) => ({
-    ...meta,
-    content:
-      s && keys
-        ? decryptEntry(
-            s,
-            { nonce, ciphertext },
-            { userId: meta.user_id, logDate: meta.log_date, keyVersion: meta.key_version },
-            keys.get(keyId(meta.user_id, meta.key_version)),
-          )
-        : null,
-  }));
-}
-
-/** All entries by one user (self or a friend), newest first, decrypted. */
+/** All entries by one user (self or a friend), newest first. */
 export function useUserEntries(userId: string | undefined) {
-  const s = useSodium().data;
-  const keys = useKeyMap();
   const q = useQuery({
     queryKey: qk.entries(userId ?? "-"),
     enabled: !!userId,
@@ -73,10 +41,9 @@ export function useUserEntries(userId: string | undefined) {
           .eq("user_id", userId!)
           .order("log_date", { ascending: false })
           .order("created_at", { ascending: false }),
-      ) as EntryRow[],
+      ) as Entry[],
   });
-  const entries = useMemo(() => decryptAll(s, keys.data, q.data), [s, keys.data, q.data]);
-  return { ...q, entries, decrypting: !s || keys.isLoading };
+  return { ...q, entries: q.data };
 }
 
 export type FeedItem = Entry & { author: Pick<Profile, "id" | "username" | "display_name"> | null };
@@ -86,8 +53,6 @@ const PAGE = 30;
 /** Friends' entries, newest first, 30 per page. */
 export function useFeed() {
   const { userId } = useReady();
-  const s = useSodium().data;
-  const keys = useKeyMap();
   const q = useInfiniteQuery({
     queryKey: qk.feed,
     initialPageParam: 0,
@@ -99,19 +64,13 @@ export function useFeed() {
           .neq("user_id", userId)
           .order("created_at", { ascending: false })
           .range(pageParam * PAGE, pageParam * PAGE + PAGE - 1),
-      ) as unknown as (EntryRow & { author: FeedItem["author"] })[],
+      ) as unknown as FeedItem[],
     getNextPageParam: (last, all) => (last.length === PAGE ? all.length : undefined),
   });
-  const items = useMemo<FeedItem[] | undefined>(() => {
-    const rows = q.data?.pages.flat();
-    if (!rows) return undefined;
-    const dec = decryptAll(s, keys.data, rows)!;
-    return dec.map((e, i) => ({ ...e, author: rows[i].author }));
-  }, [s, keys.data, q.data]);
-  return { ...q, items };
+  return { ...q, items: q.data?.pages.flat() };
 }
 
-export type FriendStat = Pick<Profile, "id" | "username" | "display_name" | "public_key"> & {
+export type FriendStat = Pick<Profile, "id" | "username" | "display_name"> & {
   current_streak: number;
   logged_today: boolean;
 };
@@ -123,7 +82,7 @@ export function useFriends() {
   });
 }
 
-export type PublicUser = Pick<Profile, "id" | "username" | "display_name" | "public_key">;
+export type PublicUser = Pick<Profile, "id" | "username" | "display_name">;
 export type Request = { other: PublicUser; incoming: boolean; created_at: string };
 
 export function useRequests() {
@@ -142,9 +101,7 @@ export function useRequests() {
       ) as { user_a: string; user_b: string; requested_by: string; created_at: string }[];
       if (!rows.length) return [];
       const ids = rows.map((r) => (r.user_a === userId ? r.user_b : r.user_a));
-      const profiles = must(
-        await sb.from("profiles").select("id, username, display_name, public_key").in("id", ids),
-      ) as PublicUser[];
+      const profiles = must(await sb.from("profiles").select("id, username, display_name").in("id", ids)) as PublicUser[];
       const byId = new Map(profiles.map((p) => [p.id, p]));
       return rows
         .map((r) => {
@@ -193,28 +150,6 @@ export function useFindUser(username: string | undefined) {
   });
 }
 
-/** Runs key sync on load and whenever the friends list changes. */
-export function useKeySync() {
-  const { userId, identity } = useReady();
-  const qc = useQueryClient();
-  const friends = useFriends();
-  const friendIds = friends.data?.map((f) => f.id).join(",");
-  useEffect(() => {
-    if (friendIds === undefined) return;
-    let alive = true;
-    syncKeys(userId, identity)
-      .then((changed) => {
-        if (alive && changed) qc.invalidateQueries({ queryKey: qk.keys });
-      })
-      .catch(() => {
-        /* retried on the next load or friend change */
-      });
-    return () => {
-      alive = false;
-    };
-  }, [friendIds, userId, identity, qc]);
-}
-
 // ------------------------------------------------------------------ mutations
 
 function useInvalidateMine() {
@@ -227,24 +162,20 @@ function useInvalidateMine() {
   };
 }
 
+const row = (c: EntryInput) => ({ title: c.title, url: c.url ?? null, notes: c.notes ?? null });
+
 export function useSaveEntry() {
-  const { userId, identity, profile } = useReady();
+  const { userId, profile } = useReady();
   const invalidate = useInvalidateMine();
   return useMutation({
-    mutationFn: async ({ id, content }: { id?: string; content: EntryContent }) => {
-      const s = await getSodium();
-      const { version, key } = await myWritingKey(userId, identity);
+    mutationFn: async ({ id, content }: { id?: string; content: EntryInput }) => {
       const sb = supabase();
       if (id) {
-        const row = must(await sb.from("entries").select("log_date").eq("id", id).single()) as { log_date: string };
-        const enc = encryptEntry(s, content, { userId, logDate: row.log_date, keyVersion: version }, key);
-        const updated = must(await sb.from("entries").update(enc).eq("id", id).select("id")) as unknown[];
+        const updated = must(await sb.from("entries").update(row(content)).eq("id", id).select("id")) as unknown[];
         if (!updated.length) throw new Error("Only today's reads can be edited.");
         return { created: false };
       }
-      const logDate = localDate(profile.timezone);
-      const enc = encryptEntry(s, content, { userId, logDate, keyVersion: version }, key);
-      must(await sb.from("entries").insert({ user_id: userId, log_date: logDate, ...enc }));
+      must(await sb.from("entries").insert({ user_id: userId, log_date: localDate(profile.timezone), ...row(content) }));
       return { created: true };
     },
     onSuccess: invalidate,
@@ -267,7 +198,7 @@ const pair = (a: string, b: string) => (a < b ? { user_a: a, user_b: b } : { use
 function useInvalidateSocial() {
   const qc = useQueryClient();
   return () => {
-    for (const key of [qk.requests, qk.friends, qk.feed, qk.leaderboard, qk.keys]) qc.invalidateQueries({ queryKey: key });
+    for (const key of [qk.requests, qk.friends, qk.feed, qk.leaderboard]) qc.invalidateQueries({ queryKey: key });
   };
 }
 
@@ -291,7 +222,6 @@ export function useFriendActions() {
     },
     onSuccess: invalidate,
   });
-  /** Decline, cancel or unfriend. */
   const remove = useMutation({
     mutationFn: async (otherId: string) => {
       must(await supabase().from("friendships").delete().match(pair(userId, otherId)));

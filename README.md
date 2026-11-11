@@ -1,8 +1,8 @@
 # Readlet
 
 A small, private reading-streak app for friends: log what you read each day, keep a strict daily streak,
-see your friends' reads and a weekly leaderboard. Titles, links and notes are end-to-end encrypted in the
-browser with libsodium; the database only stores ciphertext. Next.js 16 + Supabase, deployed on Vercel.
+see your friends' reads and a weekly leaderboard. Email + password accounts with password reset; pasting a link
+suggests its title. Next.js 16 + Supabase, deployed on Vercel.
 
 See `DECISIONS.md` for choices made where the spec was open.
 
@@ -32,7 +32,7 @@ With Docker and the Supabase CLI you can instead run `supabase start`, which app
 ## Tests
 
 ```bash
-npm run lint && npm run typecheck && npm test   # unit: crypto, key sync, streaks, contrast
+npm run lint && npm run typecheck && npm test   # unit: streaks, contrast
 npm run test:e2e                                # Playwright, against local Supabase (CI does this)
 ```
 
@@ -47,11 +47,10 @@ Vercel builds every branch (preview URL) and `main` (production). Set `NEXT_PUBL
 ## Layout
 
 ```
-app/                 routes: welcome, signup, signin, invite/[username], (app)/today|feed|leaderboard|me|friends|settings|u/[username]
-components/          Button, Sheet, LogSheet, EntryCard, StreakFlame, WeekStrip, Calendar, Cat, AppShell, …
-lib/crypto/          keys, entry encryption, key-sync planner (pure functions + tests)
-lib/session/         sign-up/in, password change, device key store, session provider
-lib/data/            queries and mutations (TanStack Query), key sync I/O
+app/                 routes: welcome, signup, signin, forgot, reset, invite/[username], api/title, (app)/today|feed|leaderboard|me|friends|settings|u/[username]
+components/          Button, Sheet, LogSheet, EntryCard, StreakFlame, WeekStrip, Calendar, AppShell, …
+lib/session/         sign-up/in, password reset/change, session provider
+lib/data/            queries and mutations (TanStack Query)
 lib/streaks/         client copies of the streak and leaderboard rules
 supabase/migrations/ schema, RLS policies, SQL functions
 supabase/tests/      RLS tests (SQL)

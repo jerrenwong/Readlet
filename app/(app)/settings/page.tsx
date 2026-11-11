@@ -4,7 +4,14 @@ import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/Button";
 import { Card, Field, Input } from "@/components/ui";
-import { changePassword, deleteAccount, displayNameSchema, FriendlyError, usernameSchema } from "@/lib/session/auth";
+import {
+  changeEmail,
+  changePassword,
+  deleteAccount,
+  displayNameSchema,
+  FriendlyError,
+  usernameSchema,
+} from "@/lib/session/auth";
 import { useReady } from "@/lib/session/SessionProvider";
 import { supabase } from "@/lib/supabase/client";
 
@@ -16,6 +23,7 @@ export default function SettingsPage() {
     <div className="flex flex-col gap-5">
       <h1 className="text-2xl">Settings</h1>
       <ProfileForm />
+      <EmailForm />
       <PasswordForm />
       <Danger />
     </div>
@@ -69,8 +77,40 @@ function ProfileForm() {
   );
 }
 
+function EmailForm() {
+  const { email } = useReady();
+  const [value, setValue] = useState(email);
+  const [state, setState] = useState<{ busy?: boolean; error?: string; ok?: boolean }>({});
+
+  async function save(e: FormEvent) {
+    e.preventDefault();
+    setState({ busy: true });
+    try {
+      await changeEmail(value);
+      setState({ ok: true });
+    } catch (err) {
+      setState({ error: msg(err) });
+    }
+  }
+
+  return (
+    <Card>
+      <form onSubmit={save} className="flex flex-col gap-4">
+        <h2 className="text-lg">Email</h2>
+        <Field label="Email" error={state.error}>
+          <Input type="email" value={value} onChange={(e) => setValue(e.target.value)} autoComplete="email" />
+        </Field>
+        {state.ok && <p className="text-accent-text" role="status">Confirm via the link sent to the new address.</p>}
+        <Button type="submit" disabled={state.busy || value.trim().toLowerCase() === email}>
+          Save email
+        </Button>
+      </form>
+    </Card>
+  );
+}
+
 function PasswordForm() {
-  const { userId } = useReady();
+  const { email } = useReady();
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -82,7 +122,7 @@ function PasswordForm() {
     if (next !== confirm) return setState({ error: "Passwords don't match." });
     setState({ busy: true });
     try {
-      await changePassword(userId, current, next);
+      await changePassword(email, current, next);
       setCurrent("");
       setNext("");
       setConfirm("");

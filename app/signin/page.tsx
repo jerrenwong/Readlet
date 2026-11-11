@@ -12,18 +12,18 @@ import { useSession } from "@/lib/session/SessionProvider";
 export default function SignInPage() {
   const router = useRouter();
   const { reload } = useSession();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   async function submit(e: FormEvent) {
     e.preventDefault();
-    if (!username.trim() || !password) return setError("Enter username and password.");
+    if (!email.trim() || !password) return setError("Enter email and password.");
     setBusy(true);
     setError(null);
     try {
-      await signIn(username, password);
+      await signIn(email, password);
       await reload();
       router.replace("/today");
     } catch (err) {
@@ -39,15 +39,8 @@ export default function SignInPage() {
       </Link>
       <h1 className="mb-6 text-3xl">Sign in</h1>
       <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
-        <Field label="Username">
-          <Input
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            autoCapitalize="none"
-            autoCorrect="off"
-            spellCheck={false}
-            autoComplete="username"
-          />
+        <Field label="Email">
+          <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" inputMode="email" />
         </Field>
         <Field label="Password">
           <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
@@ -60,6 +53,9 @@ export default function SignInPage() {
         <Button type="submit" disabled={busy}>
           {busy ? "Signing in…" : "Sign in"}
         </Button>
+        <Link href="/forgot" className="min-h-11 self-center font-extrabold text-accent-text">
+          Forgot password?
+        </Link>
       </form>
     </PublicPage>
   );

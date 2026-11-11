@@ -4,8 +4,10 @@ import { expect, test, type Page } from "@playwright/test";
 const tag = () => Math.random().toString(36).slice(2, 8);
 
 async function signUp(page: Page, username: string, name: string, password: string) {
+  const email = `${username}@example.com`;
   await page.goto("/welcome");
   await page.getByRole("link", { name: "Start reading" }).click();
+  await page.getByLabel("Email").fill(email);
   await page.getByLabel("Username").fill(username);
   await page.getByLabel("Display name").fill(name);
   await page.getByLabel("Password").fill(password);
@@ -21,7 +23,7 @@ async function logRead(page: Page, title: string) {
   await expect(page.getByRole("heading", { name: title })).toBeVisible();
 }
 
-test("friends see each other's encrypted reads", async ({ browser }, info) => {
+test("friends see each other's reads", async ({ browser }, info) => {
   const t = `${tag()}${info.project.name[0]}`;
   const alice = { u: `alice_${t}`, pw: "alice-password-1" };
   const bob = { u: `bob_${t}`, pw: "bob-password-22" };
@@ -53,10 +55,10 @@ test("friends see each other's encrypted reads", async ({ browser }, info) => {
   await a.goto("/leaderboard");
   await expect(a.locator("li", { hasText: "Bob" })).toContainText("1");
 
-  // New device: the password unlocks the same key.
+  // Another device
   const a2 = await (await browser.newContext()).newPage();
   await a2.goto("/signin");
-  await a2.getByLabel("Username").fill(alice.u);
+  await a2.getByLabel("Email").fill(`${alice.u}@example.com`);
   await a2.getByLabel("Password").fill(alice.pw);
   await a2.getByRole("button", { name: "Sign in" }).click();
   await expect(a2.getByRole("heading", { name: `Middlemarch ${t}` })).toBeVisible();
