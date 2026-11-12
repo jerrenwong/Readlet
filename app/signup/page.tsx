@@ -11,7 +11,7 @@ import {
   emailSchema,
   FriendlyError,
   isUsernameAvailable,
-  passwordSchema,
+  passwordError,
   signUp,
   usernameSchema,
 } from "@/lib/session/auth";
@@ -45,7 +45,8 @@ export default function SignUpPage() {
     if (!u.success) next.username = u.error.issues[0].message;
     const d = displayNameSchema.safeParse(displayName);
     if (!d.success) next.displayName = d.error.issues[0].message;
-    if (!passwordSchema.safeParse(password).success) next.password = "Min. 10 characters.";
+    const pwError = passwordError(password);
+    if (pwError) next.password = pwError;
     setErrors(next);
     if (Object.keys(next).length) return;
     setBusy(true);
@@ -92,7 +93,7 @@ export default function SignUpPage() {
         <Field label="Display name" error={errors.displayName}>
           <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} maxLength={40} autoComplete="nickname" />
         </Field>
-        <Field label="Password" error={errors.password} hint="Min. 10 characters">
+        <Field label="Password" error={errors.password} hint="10–72 characters">
           <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
         </Field>
         {errors.form && (

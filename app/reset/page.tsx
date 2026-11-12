@@ -34,7 +34,7 @@ export default function ResetPage() {
         <p role="alert">Link expired. Request a new one.</p>
       ) : (
         <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
-          <Field label="New password" error={state.error} hint="Min. 10 characters">
+          <Field label="New password" error={state.error} hint="10–72 characters">
             <Input type="password" value={password} onChange={(e) => setPw(e.target.value)} autoComplete="new-password" />
           </Field>
           <Button type="submit" disabled={state.busy}>

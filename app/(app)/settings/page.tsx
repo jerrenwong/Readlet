@@ -10,6 +10,7 @@ import {
   deleteAccount,
   displayNameSchema,
   FriendlyError,
+  passwordError,
   usernameSchema,
 } from "@/lib/session/auth";
 import { useReady } from "@/lib/session/SessionProvider";
@@ -118,7 +119,8 @@ function PasswordForm() {
 
   async function save(e: FormEvent) {
     e.preventDefault();
-    if (next.length < 10) return setState({ error: "Min. 10 characters." });
+    const pwError = passwordError(next);
+    if (pwError) return setState({ error: pwError });
     if (next !== confirm) return setState({ error: "Passwords don't match." });
     setState({ busy: true });
     try {
@@ -139,7 +141,7 @@ function PasswordForm() {
         <Field label="Current password">
           <Input type="password" value={current} onChange={(e) => setCurrent(e.target.value)} autoComplete="current-password" />
         </Field>
-        <Field label="New password" hint="Min. 10 characters">
+        <Field label="New password" hint="10–72 characters">
           <Input type="password" value={next} onChange={(e) => setNext(e.target.value)} autoComplete="new-password" />
         </Field>
         <Field label="Repeat new password">

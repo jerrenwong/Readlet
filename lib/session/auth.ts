@@ -9,7 +9,16 @@ export const usernameSchema = z
   .toLowerCase()
   .regex(/^[a-z0-9_]{3,20}$/, "3–20 characters: a–z, 0–9, _");
 export const displayNameSchema = z.string().trim().min(1, "Required").max(40, "Max. 40 characters");
-export const passwordSchema = z.string().min(10, "Min. 10 characters");
+// Supabase hashes passwords with bcrypt, which accepts at most 72 bytes.
+export const passwordSchema = z
+  .string()
+  .min(10, "Min. 10 characters")
+  .refine((p) => new TextEncoder().encode(p).length <= 72, "Max. 72 characters");
+
+export function passwordError(p: string): string | null {
+  const r = passwordSchema.safeParse(p);
+  return r.success ? null : r.error.issues[0].message;
+}
 
 export class FriendlyError extends Error {}
 
@@ -54,7 +63,8 @@ export async function sendPasswordReset(email: string) {
 }
 
 export async function setPassword(password: string) {
-  passwordSchema.parse(password);
+  const invalid = passwordError(password);
+  if (invalid) throw new FriendlyError(invalid);
   const { error } = await supabase().auth.updateUser({ password });
   if (error) throw new FriendlyError(error.message);
 }
