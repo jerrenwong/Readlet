@@ -8,7 +8,6 @@ import { useSession } from "@/lib/session/SessionProvider";
 import { Spinner } from "./ui";
 import { Avatar } from "./Avatar";
 import { useReady } from "@/lib/session/SessionProvider";
-import { SideColumn } from "./SideColumn";
 
 const TABS = [
   { href: "/today", label: "Today", icon: "M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 15.6 7.1 18.2 8 12.7 4 8.8l5.5-.8z" },
@@ -40,7 +39,6 @@ function Shell({ children }: { children: ReactNode }) {
   const path = usePathname();
   const requests = useRequests();
   const pending = requests.data?.some((r) => r.incoming) ?? false;
-  const wide = path.startsWith("/today") || path.startsWith("/feed");
 
   const nav = (
     <ul className="grid grid-cols-4 lg:flex lg:flex-col lg:gap-1">
@@ -84,20 +82,16 @@ function Shell({ children }: { children: ReactNode }) {
         <div className="mx-auto max-w-[640px] lg:max-w-none">{nav}</div>
       </nav>
       <main className="mx-auto w-full max-w-[640px] px-4 pt-4 pb-28 lg:px-0 lg:pt-8 lg:pb-12">
-        <div className="mb-2 flex items-center justify-between lg:hidden">
-          <Link href="/today" className="text-xl font-extrabold text-primary-edge">
+        <div className="mb-2 flex h-10 items-center justify-between lg:mb-4">
+          <Link href="/today" className="text-xl font-extrabold text-primary-edge lg:invisible">
             Readlet
           </Link>
           <MeLink />
         </div>
         {children}
       </main>
-      <aside className="hidden flex-col gap-6 pt-8 lg:flex" aria-label="Account and leaderboard">
-        <div className="flex h-10 justify-end">
-          <MeLink />
-        </div>
-        {wide && <SideColumn />}
-      </aside>
+      {/* Empty right column of the same width as the sidebar keeps the content centered. */}
+      <div className="hidden lg:block" aria-hidden="true" />
     </div>
   );
 }
