@@ -104,6 +104,18 @@ function EntryForm({
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-4" noValidate>
+      <Field label="Title" error={errors.title} hint={suggesting ? "Fetching title…" : undefined}>
+        <Input
+          value={title}
+          onChange={(e) => {
+            titleEdited.current = e.target.value !== "";
+            setTitle(e.target.value);
+          }}
+          maxLength={200}
+          autoComplete="off"
+          required
+        />
+      </Field>
       <Field label="Link" error={errors.url}>
         <Input
           value={url}
@@ -115,18 +127,6 @@ function EntryForm({
           inputMode="url"
           placeholder="https://"
           autoComplete="off"
-        />
-      </Field>
-      <Field label="Title" error={errors.title} hint={suggesting ? "Fetching title…" : undefined}>
-        <Input
-          value={title}
-          onChange={(e) => {
-            titleEdited.current = e.target.value !== "";
-            setTitle(e.target.value);
-          }}
-          maxLength={200}
-          autoComplete="off"
-          required
         />
       </Field>
       <Field label="Notes" error={errors.notes}>
