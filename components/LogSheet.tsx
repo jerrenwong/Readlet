@@ -104,17 +104,29 @@ function EntryForm({
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-4" noValidate>
-      <Field label="Title" error={errors.title} hint={suggesting ? "Fetching title…" : undefined}>
-        <Input
-          value={title}
-          onChange={(e) => {
-            titleEdited.current = e.target.value !== "";
-            setTitle(e.target.value);
-          }}
-          maxLength={200}
-          autoComplete="off"
-          required
-        />
+      <Field label="Title" error={errors.title}>
+        <div className="relative">
+          <Input
+            value={title}
+            onChange={(e) => {
+              titleEdited.current = e.target.value !== "";
+              setTitle(e.target.value);
+            }}
+            maxLength={200}
+            autoComplete="off"
+            required
+            placeholder={suggesting ? "Fetching title…" : undefined}
+            aria-busy={suggesting}
+            className={suggesting ? "pr-12" : ""}
+          />
+          {suggesting && (
+            <span
+              className="absolute top-1/2 right-4 size-5 -translate-y-1/2 animate-spin rounded-full border-[3px] border-flame-off border-t-primary"
+              role="status"
+              aria-label="Fetching title"
+            />
+          )}
+        </div>
       </Field>
       <Field label="Link" error={errors.url}>
         <Input
