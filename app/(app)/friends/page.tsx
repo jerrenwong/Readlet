@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { Avatar } from "@/components/Avatar";
+import { EmptyState } from "@/components/Brand";
 import { Button } from "@/components/Button";
 import { UserCard } from "@/components/InviteCard";
 import { StreakBadge } from "@/components/StreakFlame";
@@ -44,7 +45,7 @@ export default function FriendsPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <h1 className="text-2xl">Friends</h1>
+      <h1 className="text-5xl text-flame">Friends</h1>
 
       <Card>
         <form onSubmit={search} className="flex gap-2" role="search">
@@ -72,9 +73,9 @@ export default function FriendsPage() {
       </Card>
 
       <Card>
-        <h2 className="mb-3 text-lg">Invite link</h2>
+        <h2 className="mb-3 text-2xl">Invite link</h2>
         <div className="flex items-center gap-2">
-          <code className="min-w-0 flex-1 truncate rounded-xl bg-background px-3 py-2.5 text-sm">{link}</code>
+          <code className="min-w-0 flex-1 truncate border border-flame-off bg-background px-3 py-2.5 text-sm">{link}</code>
           <Button variant="secondary" size="sm" onClick={copy}>
             {copied ? "Copied" : "Copy"}
           </Button>
@@ -83,7 +84,7 @@ export default function FriendsPage() {
 
       {incoming.length > 0 && (
         <section className="flex flex-col gap-2">
-          <h2 className="text-lg">Requests</h2>
+          <h2 className="text-2xl">Requests</h2>
           {incoming.map((r) => (
             <RequestRow key={r.other.id} r={r} />
           ))}
@@ -91,7 +92,7 @@ export default function FriendsPage() {
       )}
       {outgoing.length > 0 && (
         <section className="flex flex-col gap-2">
-          <h2 className="text-lg">Sent</h2>
+          <h2 className="text-2xl">Sent</h2>
           {outgoing.map((r) => (
             <RequestRow key={r.other.id} r={r} />
           ))}
@@ -99,20 +100,22 @@ export default function FriendsPage() {
       )}
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-lg">Friends</h2>
+        <h2 className="text-2xl">Friends</h2>
         {friends.isLoading && <Spinner />}
         {friends.data?.length === 0 && (
-          <p className="text-text-muted">None yet</p>
+          <EmptyState art="building">
+            <p className="text-text-muted">None yet</p>
+          </EmptyState>
         )}
         {friends.data?.map((f) => (
           <Link
             key={f.id}
             href={`/u/${f.username}`}
-            className="flex min-h-16 items-center gap-3 rounded-[var(--radius-card)] bg-surface p-3 shadow-sm"
+            className="flex min-h-16 items-center gap-3 border border-flame-off bg-surface p-3 hover:border-field"
           >
             <Avatar name={f.display_name} size={44} />
             <span className="min-w-0 flex-1">
-              <span className="block truncate font-extrabold">{f.display_name}</span>
+              <span className="block truncate font-semibold">{f.display_name}</span>
               {f.logged_today && <span className="block text-sm text-accent-text">✓ Today</span>}
             </span>
             <StreakBadge n={f.current_streak} lit={f.logged_today} />
@@ -127,10 +130,10 @@ function RequestRow({ r }: { r: Request }) {
   const { accept, remove } = useFriendActions();
   const busy = accept.isPending || remove.isPending;
   return (
-    <div className="flex items-center gap-3 rounded-[var(--radius-card)] bg-surface p-3 shadow-sm">
+    <div className="flex items-center gap-3 border border-flame-off bg-surface p-3">
       <Avatar name={r.other.display_name} size={44} />
       <span className="min-w-0 flex-1">
-        <span className="block truncate font-extrabold">{r.other.display_name}</span>
+        <span className="block truncate font-semibold">{r.other.display_name}</span>
         <span className="block truncate text-sm text-text-muted">@{r.other.username}</span>
       </span>
       {r.incoming ? (
@@ -150,7 +153,7 @@ function RequestRow({ r }: { r: Request }) {
       ) : (
         <button
           type="button"
-          className="min-h-11 rounded-xl px-3 text-text-muted hover:bg-background"
+          className="min-h-11 px-3 text-text-muted hover:bg-background hover:text-text"
           disabled={busy}
           onClick={() => remove.mutate(r.other.id)}
         >

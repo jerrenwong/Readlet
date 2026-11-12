@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { PublicShell } from "@/components/Brand";
 import { Button } from "@/components/Button";
 import { Field, Input, Spinner } from "@/components/ui";
 import { FriendlyError, setPassword } from "@/lib/session/auth";
@@ -26,8 +27,8 @@ export default function ResetPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col px-4 py-8">
-      <h1 className="mb-6 text-3xl">New password</h1>
+    <PublicShell>
+      <h1 className="mb-6 text-5xl text-flame">New password</h1>
       {session.status === "loading" ? (
         <Spinner />
       ) : session.status === "signedOut" ? (
@@ -42,6 +43,6 @@ export default function ResetPage() {
           </Button>
         </form>
       )}
-    </main>
+    </PublicShell>
   );
 }

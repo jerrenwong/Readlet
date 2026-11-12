@@ -12,10 +12,13 @@ const pairs: [keyof typeof colors, keyof typeof colors, number][] = [
   ["accentText", "surface", 4.5],
   ["dangerText", "background", 4.5],
   ["dangerText", "surface", 4.5],
-  ["surface", "primary", 3], // white 18px/800 button labels
+  ["surface", "primary", 4.5], // button labels at any size
+  ["surface", "primaryEdge", 4.5], // avatar letters
   ["surface", "accent", 3],
   ["surface", "danger", 3],
   ["accent", "surface", 3], // checkmarks
+  ["accent", "background", 3], // teal page titles (large text)
+  ["field", "surface", 3], // input borders
   ["flame", "surface", 2.5], // decorative flame; paired with a number label
 ];
 

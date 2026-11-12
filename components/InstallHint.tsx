@@ -22,11 +22,11 @@ export function InstallHint() {
   const [hidden, setHidden] = useState(false);
   if (!show || hidden) return null;
   return (
-    <div className="flex items-start gap-3 rounded-[var(--radius-card)] border-2 border-dashed border-primary/50 bg-surface p-4">
+    <div className="flex items-start gap-3 border border-dashed border-accent/60 bg-surface p-4">
       <p className="flex-1 text-sm">Add to Home Screen (Share menu) to stay signed in.</p>
       <button
         type="button"
-        className="min-h-11 rounded-xl px-2 font-extrabold text-text-muted"
+        className="min-h-11 px-2 font-semibold text-text-muted hover:text-text"
         onClick={() => {
           try {
             localStorage.setItem(KEY, "1");

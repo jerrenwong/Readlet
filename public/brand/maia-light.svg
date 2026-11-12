@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="34 52.5792 611 174.8416" role="img" aria-labelledby="title">
+  <title id="title">MAIA</title>
+  <!-- Official MAIA mark (light-background colors) with "MAIA" set from the lockup's own outlined Manrope 650 glyphs. -->
+  <defs><clipPath id="mark-clip" clipPathUnits="userSpaceOnUse">
+  <rect x="-520" y="52.57918552036199" width="1400" height="174.84162895927602"/>
+</clipPath></defs>
+<polyline points="245.0271,52.5792 180.0000,227.4208 114.9729,52.5792 112.1855,227.4208 245.0271,52.5792 44.3774,227.4208 114.9729,52.5792 315.6226,227.4208 245.0271,52.5792 247.8145,227.4208 114.9729,52.5792"
+  fill="none" stroke="#6B43B8" stroke-width="12.402" stroke-linecap="square"
+  stroke-linejoin="miter" stroke-miterlimit="8" clip-path="url(#mark-clip)"/>
+  <path d="M140 0V1440H343L853 389L1362 1440H1566V1H1354V955L901 0H805L352 955V0ZM1746 0 2207 1440H2534L2995 0H2763L2341 1303H2395L1979 0ZM1994 319V529H2748V319ZM3195 0V1440H3420V0ZM3620 0 4081 1440H4408L4869 0H4637L4215 1303H4269L3853 0ZM3868 319V529H4622V319Z" fill="#191522" transform="translate(359.8 182.12) scale(0.0585 -0.0585)" data-font-family="Manrope" data-font-weight="650"/>
+</svg>

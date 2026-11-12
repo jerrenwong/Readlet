@@ -10,7 +10,7 @@ export async function confettiBurst() {
     spread: 75,
     startVelocity: 38,
     origin: { y: 0.35 },
-    colors: ["#E8701F", "#FF6B2C", "#1F9E8C", "#FFD27A", "#FFFFFF"],
+    colors: ["#0F89AB", "#0C6D88", "#0C264D", "#FFFFFF"],
     disableForReducedMotion: true,
   });
 }
@@ -29,8 +29,8 @@ export function MilestoneCard({ days, onClose }: { days: number | null; onClose:
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
         >
-          <p className="num text-7xl text-primary-edge">{days}</p>
-          <h2 className="text-2xl">day streak</h2>
+          <p className="num text-9xl text-flame">{days}</p>
+          <h2 className="text-4xl">day streak</h2>
           <Button onClick={onClose} className="mt-2 w-full max-w-xs" autoFocus>
             Continue
           </Button>

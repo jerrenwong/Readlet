@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
+import { EmptyState } from "@/components/Brand";
 import { EntryCard } from "@/components/EntryCard";
-import { Card, ErrorNote, Spinner } from "@/components/ui";
+import { ErrorNote, Spinner } from "@/components/ui";
 import { useFeed, useFriends, type FeedItem } from "@/lib/data/hooks";
 import { useReady } from "@/lib/session/SessionProvider";
 import { dayLabel, localDate } from "@/lib/streaks";
@@ -34,17 +35,17 @@ export default function FeedPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <h1 className="text-2xl">Feed</h1>
+      <h1 className="text-5xl text-flame">Feed</h1>
       {feed.isLoading && <Spinner />}
       {feed.error && <ErrorNote>Couldn&apos;t load.</ErrorNote>}
       {feed.items && feed.items.length === 0 && (
-        <Card className="flex flex-col items-center gap-3 text-center">
-          <p className="font-extrabold">No reads yet</p>
-        </Card>
+        <EmptyState art="pouring">
+          <p className="font-semibold">No reads yet</p>
+        </EmptyState>
       )}
       {groups.map(([date, items]) => (
         <section key={date} className="flex flex-col gap-3">
-          <h2 className="text-sm text-text-muted">{dayLabel(date, today)}</h2>
+          <h2 className="eyebrow">{dayLabel(date, today)}</h2>
           {items.map((e) => (
             <EntryCard key={e.id} entry={e} author={e.author} streak={streaks.get(e.user_id)} />
           ))}

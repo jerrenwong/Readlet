@@ -12,9 +12,9 @@ export function Calendar12({ days, today }: { days: ReadonlySet<string>; today: 
           <span
             key={d}
             title={d}
-            className={`aspect-square rounded-[4px] ${
-              d > today ? "bg-transparent" : days.has(d) ? "bg-accent" : "bg-flame-off/45"
-            } ${d === today ? "ring-2 ring-primary" : ""}`}
+            className={`aspect-square ${
+              d > today ? "bg-transparent" : days.has(d) ? "bg-accent" : "bg-flame-off/60"
+            } ${d === today ? "ring-2 ring-primary-edge" : ""}`}
           />
         ))}
       </div>

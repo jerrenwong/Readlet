@@ -49,8 +49,10 @@ function Shell({ children }: { children: ReactNode }) {
             <Link
               href={t.href}
               aria-current={active ? "page" : undefined}
-              className={`relative flex min-h-14 flex-col items-center justify-center gap-0.5 text-xs lg:min-h-12 lg:flex-row lg:justify-start lg:gap-3 lg:rounded-2xl lg:px-4 lg:text-base ${
-                active ? "font-extrabold text-primary-edge lg:bg-surface lg:shadow-sm" : "text-text-muted hover:text-text"
+              className={`relative flex min-h-14 flex-col items-center justify-center gap-0.5 text-xs lg:min-h-12 lg:flex-row lg:justify-start lg:gap-3 lg:px-4 lg:text-base ${
+                active
+                  ? "font-semibold text-accent-text before:absolute before:inset-x-5 before:top-0 before:h-[3px] before:bg-flame lg:bg-surface lg:before:inset-x-auto lg:before:inset-y-0 lg:before:left-0 lg:before:h-auto lg:before:w-[3px]"
+                  : "text-text-muted hover:text-text lg:hover:bg-surface/60"
               }`}
             >
               <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" className="fill-current">
@@ -76,14 +78,14 @@ function Shell({ children }: { children: ReactNode }) {
         aria-label="Sections"
         className="fixed inset-x-0 bottom-0 z-40 border-t border-flame-off bg-surface pb-[env(safe-area-inset-bottom)] lg:sticky lg:top-0 lg:h-dvh lg:border-t-0 lg:bg-transparent lg:pt-8 lg:pb-0"
       >
-        <Link href="/today" className="mb-6 hidden h-10 items-center px-4 text-2xl font-extrabold text-primary-edge lg:flex">
+        <Link href="/today" className="mb-6 hidden h-10 items-center px-4 font-display text-4xl font-bold text-flame lg:flex">
           Readlet
         </Link>
         <div className="mx-auto max-w-[640px] lg:max-w-none">{nav}</div>
       </nav>
       <main className="mx-auto w-full max-w-[640px] px-4 pt-4 pb-28 lg:px-0 lg:pt-8 lg:pb-12">
-        <div className="mb-2 flex h-10 items-center justify-between lg:mb-4">
-          <Link href="/today" className="text-xl font-extrabold text-primary-edge lg:invisible">
+        <div className="mb-4 flex h-10 items-center justify-between">
+          <Link href="/today" className="font-display text-3xl font-bold text-flame lg:invisible">
             Readlet
           </Link>
           <span className="lg:hidden">
@@ -111,7 +113,7 @@ function MeLink() {
       href="/me"
       aria-label="Me"
       aria-current={active ? "page" : undefined}
-      className={`rounded-full ${active ? "ring-3 ring-primary ring-offset-2 ring-offset-background" : ""}`}
+      className={`inline-flex rounded-full ${active ? "ring-2 ring-flame ring-offset-2 ring-offset-background" : ""}`}
     >
       <Avatar name={profile.display_name} size={40} />
     </Link>
