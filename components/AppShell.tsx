@@ -86,12 +86,18 @@ function Shell({ children }: { children: ReactNode }) {
           <Link href="/today" className="text-xl font-extrabold text-primary-edge lg:invisible">
             Readlet
           </Link>
-          <MeLink />
+          <span className="lg:hidden">
+            <MeLink />
+          </span>
         </div>
         {children}
       </main>
-      {/* Empty right column of the same width as the sidebar keeps the content centered. */}
-      <div className="hidden lg:block" aria-hidden="true" />
+      {/* Right column mirrors the sidebar: same width and the same gap to the content. */}
+      <div className="hidden pt-8 lg:block">
+        <div className="flex h-10 items-center">
+          <MeLink />
+        </div>
+      </div>
     </div>
   );
 }
