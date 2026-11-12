@@ -46,7 +46,7 @@ export function ProfileView({
   return (
     <div className="flex flex-col gap-5">
       <Card className="flex items-center gap-4">
-        <Avatar name={user.display_name} color={user.color} size={64} />
+        <Avatar name={user.display_name} size={64} />
         <div className="min-w-0 flex-1">
           <h1 className="truncate text-2xl">{user.display_name}</h1>
           <p className="truncate text-text-muted">@{user.username}</p>

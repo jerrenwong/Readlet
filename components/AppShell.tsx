@@ -113,7 +113,7 @@ function MeLink() {
       aria-current={active ? "page" : undefined}
       className={`rounded-full ${active ? "ring-3 ring-primary ring-offset-2 ring-offset-background" : ""}`}
     >
-      <Avatar name={profile.display_name} color={profile.color} size={40} />
+      <Avatar name={profile.display_name} size={40} />
     </Link>
   );
 }

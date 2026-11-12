@@ -57,7 +57,7 @@ export function UserCard({ username, onDone }: { username: string; onDone?: () =
 
   return (
     <div className="flex items-center gap-3 rounded-[var(--radius-card)] bg-surface p-4 shadow-sm">
-      <Avatar name={u.display_name} color={u.color} size={48} />
+      <Avatar name={u.display_name} size={48} />
       <div className="min-w-0 flex-1">
         <p className="truncate text-lg font-extrabold">{u.display_name}</p>
         <p className="truncate text-text-muted">@{u.username}</p>

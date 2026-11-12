@@ -48,7 +48,7 @@ export default function LeaderboardPage() {
                   >
                     {r.rank}
                   </span>
-                  <Avatar name={r.display_name} color={r.color} size={40} />
+                  <Avatar name={r.display_name} size={40} />
                   <span className="min-w-0 flex-1 truncate font-extrabold">
                     {r.display_name}
                     {me && <span className="font-semibold"> (you)</span>}

@@ -19,7 +19,7 @@ export async function isUsernameAvailable(username: string): Promise<boolean> {
   return data as boolean;
 }
 
-export async function signUp(input: { email: string; username: string; displayName: string; password: string; color: string }) {
+export async function signUp(input: { email: string; username: string; displayName: string; password: string }) {
   const email = emailSchema.parse(input.email);
   const username = usernameSchema.parse(input.username);
   if (!(await isUsernameAvailable(username))) throw new FriendlyError("Username taken.");
@@ -27,7 +27,7 @@ export async function signUp(input: { email: string; username: string; displayNa
     email,
     password: input.password,
     options: {
-      data: { username, display_name: displayNameSchema.parse(input.displayName), timezone: deviceTimeZone(), color: input.color },
+      data: { username, display_name: displayNameSchema.parse(input.displayName), timezone: deviceTimeZone() },
     },
   });
   if (error) {

@@ -28,7 +28,7 @@ export function EntryCard({
       {author && (
         <header className="mb-2 flex items-center gap-2">
           <a href={`/u/${author.username}`} className="flex min-h-11 items-center gap-2">
-            <Avatar name={author.display_name} color={author.color} size={32} />
+            <Avatar name={author.display_name} size={32} />
             <span className="font-extrabold">{author.display_name}</span>
           </a>
           {streak !== undefined && <StreakBadge n={streak} />}

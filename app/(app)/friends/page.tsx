@@ -110,7 +110,7 @@ export default function FriendsPage() {
             href={`/u/${f.username}`}
             className="flex min-h-16 items-center gap-3 rounded-[var(--radius-card)] bg-surface p-3 shadow-sm"
           >
-            <Avatar name={f.display_name} color={f.color} size={44} />
+            <Avatar name={f.display_name} size={44} />
             <span className="min-w-0 flex-1">
               <span className="block truncate font-extrabold">{f.display_name}</span>
               {f.logged_today && <span className="block text-sm text-accent-text">✓ Today</span>}
@@ -128,7 +128,7 @@ function RequestRow({ r }: { r: Request }) {
   const busy = accept.isPending || remove.isPending;
   return (
     <div className="flex items-center gap-3 rounded-[var(--radius-card)] bg-surface p-3 shadow-sm">
-      <Avatar name={r.other.display_name} color={r.other.color} size={44} />
+      <Avatar name={r.other.display_name} size={44} />
       <span className="min-w-0 flex-1">
         <span className="block truncate font-extrabold">{r.other.display_name}</span>
         <span className="block truncate text-sm text-text-muted">@{r.other.username}</span>

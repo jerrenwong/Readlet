@@ -4,7 +4,7 @@ Choices made where the spec was open or needed adjusting. Newest first.
 
 | Date | Decision | Why |
 | --- | --- | --- |
-| 2026-11-12 | Avatars are the display name's first letter on a chosen color (8 colors, white text ≥ 4.9:1). Me moved from the tabs to the avatar at the top right. | Owner's request. |
+| 2026-11-12 | Avatars are the display name's first letter on orange (`primary-edge`, 4.9:1); the color choice was removed the same day, `profiles.color` is unused. Me moved from the tabs to the avatar at the top right. | Owner's request. |
 | 2026-11-12 | Leaderboard ranks by current streak (ties by name) and shows only the streak; `weekly_leaderboard` replaced by `streak_leaderboard`. | Owner's request; the per-week entry score is gone. |
 | 2026-11-11 | **End-to-end encryption removed.** Entries are plain text (`title`, `url`, `notes`) protected by RLS; the admin can read them. Old encrypted accounts were deleted. Rows above about libsodium, keys and placeholder emails no longer apply. | Owner: entry privacy isn't important for now; losing reads on a forgotten password was worse. |
 | 2026-11-11 | Accounts use real email + password; sign in with email (username stays the public handle). Forgot password = Supabase reset email → `/reset`. Profiles are created by a trigger on `auth.users` from sign-up metadata. | Standard recovery. Signing in by username would expose which email belongs to which username. |
