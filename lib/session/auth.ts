@@ -19,14 +19,16 @@ export async function isUsernameAvailable(username: string): Promise<boolean> {
   return data as boolean;
 }
 
-export async function signUp(input: { email: string; username: string; displayName: string; password: string }) {
+export async function signUp(input: { email: string; username: string; displayName: string; password: string; color: string }) {
   const email = emailSchema.parse(input.email);
   const username = usernameSchema.parse(input.username);
   if (!(await isUsernameAvailable(username))) throw new FriendlyError("Username taken.");
   const { data, error } = await supabase().auth.signUp({
     email,
     password: input.password,
-    options: { data: { username, display_name: displayNameSchema.parse(input.displayName), timezone: deviceTimeZone() } },
+    options: {
+      data: { username, display_name: displayNameSchema.parse(input.displayName), timezone: deviceTimeZone(), color: input.color },
+    },
   });
   if (error) {
     if (/already registered|already exists/i.test(error.message)) throw new FriendlyError("Email already in use.");

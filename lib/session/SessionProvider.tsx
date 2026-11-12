@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabase/client";
 import { deviceTimeZone } from "@/lib/streaks";
 import { signOut as doSignOut } from "./auth";
 
-export type Profile = { id: string; username: string; display_name: string; timezone: string };
+export type Profile = { id: string; username: string; display_name: string; timezone: string; color: string };
 
 type Ready = { status: "ready"; userId: string; email: string; profile: Profile };
 type State = { status: "loading" } | { status: "signedOut" } | Ready;
@@ -26,7 +26,7 @@ async function resolve(): Promise<State> {
   if (!user) return { status: "signedOut" };
   const { data: profile } = await sb
     .from("profiles")
-    .select("id, username, display_name, timezone")
+    .select("id, username, display_name, timezone, color")
     .eq("id", user.id)
     .maybeSingle<Profile>();
   if (!profile) {

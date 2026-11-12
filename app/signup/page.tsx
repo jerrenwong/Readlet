@@ -4,7 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/Button";
+import { ColorPicker } from "@/components/Avatar";
 import { PublicPage } from "@/components/PublicPage";
+import { DEFAULT_COLOR } from "@/lib/colors";
 import { Field, Input } from "@/components/ui";
 import {
   displayNameSchema,
@@ -26,6 +28,7 @@ export default function SignUpPage() {
   const [username, setUsername] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [password, setPassword] = useState("");
+  const [color, setColor] = useState<string>(DEFAULT_COLOR);
   const [errors, setErrors] = useState<Errors>({});
   const [busy, setBusy] = useState(false);
 
@@ -50,7 +53,7 @@ export default function SignUpPage() {
     if (Object.keys(next).length) return;
     setBusy(true);
     try {
-      await signUp({ email, username, displayName, password });
+      await signUp({ email, username, displayName, password, color });
       await reload();
       router.replace("/today");
     } catch (err) {
@@ -92,6 +95,7 @@ export default function SignUpPage() {
         <Field label="Display name" error={errors.displayName}>
           <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} maxLength={40} autoComplete="nickname" />
         </Field>
+        <ColorPicker value={color} onChange={setColor} name={displayName} />
         <Field label="Password" error={errors.password} hint="Min. 10 characters">
           <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" />
         </Field>

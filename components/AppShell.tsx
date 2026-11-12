@@ -6,6 +6,8 @@ import { useEffect, type ReactNode } from "react";
 import { useRequests } from "@/lib/data/hooks";
 import { useSession } from "@/lib/session/SessionProvider";
 import { Spinner } from "./ui";
+import { Avatar } from "./Avatar";
+import { useReady } from "@/lib/session/SessionProvider";
 import { SideColumn } from "./SideColumn";
 
 const TABS = [
@@ -17,11 +19,9 @@ const TABS = [
     label: "Friends",
     icon: "M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zm7.5 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-3.5 3.2-5.5 7-5.5s7 2 7 5.5zm15.5 0c0-1.9-.7-3.5-1.9-4.7 3.2.1 6.4 1.7 6.4 4.7z",
   },
-  { href: "/me", label: "Me", icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm-8 8c0-4 4-6 8-6s8 2 8 6z" },
 ];
 
 function isActive(path: string, href: string) {
-  if (href === "/me") return ["/me", "/settings"].some((p) => path.startsWith(p));
   if (href === "/friends") return ["/friends", "/u/"].some((p) => path.startsWith(p));
   return path.startsWith(href);
 }
@@ -43,7 +43,7 @@ function Shell({ children }: { children: ReactNode }) {
   const wide = path.startsWith("/today") || path.startsWith("/feed");
 
   const nav = (
-    <ul className="grid grid-cols-5 lg:flex lg:flex-col lg:gap-1">
+    <ul className="grid grid-cols-4 lg:flex lg:flex-col lg:gap-1">
       {TABS.map((t) => {
         const active = isActive(path, t.href);
         return (
@@ -83,12 +83,39 @@ function Shell({ children }: { children: ReactNode }) {
         </Link>
         <div className="mx-auto max-w-[640px] lg:max-w-none">{nav}</div>
       </nav>
-      <main className="mx-auto w-full max-w-[640px] flex-1 px-4 pt-6 pb-28 lg:mx-0 lg:pt-8 lg:pb-12">{children}</main>
-      {wide && (
-        <aside className="hidden w-72 shrink-0 pt-8 lg:block" aria-label="Friends this week">
-          <SideColumn />
-        </aside>
-      )}
+      <main className="mx-auto w-full max-w-[640px] flex-1 px-4 pt-4 pb-28 lg:mx-0 lg:pt-8 lg:pb-12">
+        <div className="mb-2 flex items-center justify-between lg:hidden">
+          <Link href="/today" className="text-xl font-extrabold text-primary-edge">
+            Readlet
+          </Link>
+          <MeLink />
+        </div>
+        {children}
+      </main>
+      <aside className="hidden w-72 shrink-0 flex-col items-end gap-6 pt-6 lg:flex" aria-label="Account and leaderboard">
+        <MeLink />
+        {wide && (
+          <div className="w-full">
+            <SideColumn />
+          </div>
+        )}
+      </aside>
     </div>
+  );
+}
+
+function MeLink() {
+  const { profile } = useReady();
+  const path = usePathname();
+  const active = path.startsWith("/me") || path.startsWith("/settings");
+  return (
+    <Link
+      href="/me"
+      aria-label="Me"
+      aria-current={active ? "page" : undefined}
+      className={`rounded-full ${active ? "ring-3 ring-primary ring-offset-2 ring-offset-background" : ""}`}
+    >
+      <Avatar name={profile.display_name} color={profile.color} size={40} />
+    </Link>
   );
 }

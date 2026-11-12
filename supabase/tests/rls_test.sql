@@ -41,6 +41,15 @@ do $$ begin
   raise exception 'FAIL: sign-up with a taken username succeeded';
 end $$;
 
+do $$ begin
+  begin
+    insert into auth.users (id, email, aud, role, instance_id, raw_user_meta_data)
+    values ('00000000-0000-0000-0000-000000000097', 'c@example.com', 'authenticated', 'authenticated',
+            '00000000-0000-0000-0000-000000000000', '{"username":"colorful","display_name":"C","timezone":"UTC","color":"neon"}');
+  exception when check_violation then return; end;
+  raise exception 'FAIL: invalid color accepted';
+end $$;
+
 -- ---------------------------------------------------------------- profiles
 select tests.as_user('00000000-0000-0000-0000-000000000001');
 do $$ begin
@@ -117,6 +126,7 @@ do $$ begin
   raise exception 'FAIL: inserted an entry dated yesterday';
 end $$;
 update public.entries set notes = 'edited' where title = 'Dune';
+update public.profiles set color = 'teal' where id = '00000000-0000-0000-0000-000000000001';
 do $$ begin
   if not exists (select 1 from public.entries where notes = 'edited') then
     raise exception 'FAIL: author cannot edit today''s entry'; end if;
@@ -201,15 +211,14 @@ select tests.as_user('00000000-0000-0000-0000-000000000001');
 insert into public.entries (user_id, log_date, title)
 select '00000000-0000-0000-0000-000000000001', (now() at time zone 'UTC')::date, 'more' from generate_series(1, 4);
 do $$
-declare s record; expected int; got int;
+declare s record;
 begin
-  expected := 3 + (extract(isodow from (now() at time zone 'UTC')::date) <> 1)::int;
-  select score into got from public.weekly_leaderboard() where user_id = '00000000-0000-0000-0000-000000000001';
   select * into s from public.user_stats('00000000-0000-0000-0000-000000000001');
   if s.current_streak <> 2 or s.longest_streak <> 2 or s.total_reads <> 6 or not s.logged_today then
     raise exception 'FAIL: user_stats %', s; end if;
-  if got <> expected then raise exception 'FAIL: leaderboard cap (got %, expected %)', got, expected; end if;
-  if (select count(*) from public.weekly_leaderboard()) <> 2 then raise exception 'FAIL: leaderboard players'; end if;
+  if (select count(*) from public.streak_leaderboard()) <> 2 then raise exception 'FAIL: leaderboard players'; end if;
+  if (select user_id from public.streak_leaderboard() where rank = 1) <> '00000000-0000-0000-0000-000000000001' then
+    raise exception 'FAIL: leaderboard should rank the longer streak first'; end if;
   if (select count(*) from public.friends_with_stats()) <> 1 then raise exception 'FAIL: friends_with_stats'; end if;
 end $$;
 

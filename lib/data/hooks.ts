@@ -46,7 +46,7 @@ export function useUserEntries(userId: string | undefined) {
   return { ...q, entries: q.data };
 }
 
-export type FeedItem = Entry & { author: Pick<Profile, "id" | "username" | "display_name"> | null };
+export type FeedItem = Entry & { author: Pick<Profile, "id" | "username" | "display_name" | "color"> | null };
 
 const PAGE = 30;
 
@@ -60,7 +60,7 @@ export function useFeed() {
       must(
         await supabase()
           .from("entries")
-          .select(`${ENTRY_COLS}, author:profiles!entries_user_id_fkey(id, username, display_name)`)
+          .select(`${ENTRY_COLS}, author:profiles!entries_user_id_fkey(id, username, display_name, color)`)
           .neq("user_id", userId)
           .order("created_at", { ascending: false })
           .range(pageParam * PAGE, pageParam * PAGE + PAGE - 1),
@@ -70,7 +70,7 @@ export function useFeed() {
   return { ...q, items: q.data?.pages.flat() };
 }
 
-export type FriendStat = Pick<Profile, "id" | "username" | "display_name"> & {
+export type FriendStat = Pick<Profile, "id" | "username" | "display_name" | "color"> & {
   current_streak: number;
   logged_today: boolean;
 };
@@ -82,7 +82,7 @@ export function useFriends() {
   });
 }
 
-export type PublicUser = Pick<Profile, "id" | "username" | "display_name">;
+export type PublicUser = Pick<Profile, "id" | "username" | "display_name" | "color">;
 export type Request = { other: PublicUser; incoming: boolean; created_at: string };
 
 export function useRequests() {
@@ -101,7 +101,7 @@ export function useRequests() {
       ) as { user_a: string; user_b: string; requested_by: string; created_at: string }[];
       if (!rows.length) return [];
       const ids = rows.map((r) => (r.user_a === userId ? r.user_b : r.user_a));
-      const profiles = must(await sb.from("profiles").select("id, username, display_name").in("id", ids)) as PublicUser[];
+      const profiles = must(await sb.from("profiles").select("id, username, display_name, color").in("id", ids)) as PublicUser[];
       const byId = new Map(profiles.map((p) => [p.id, p]));
       return rows
         .map((r) => {
@@ -117,7 +117,7 @@ export type LeaderRow = {
   user_id: string;
   username: string;
   display_name: string;
-  score: number;
+  color: string;
   current_streak: number;
   rank: number;
 };
@@ -125,7 +125,7 @@ export type LeaderRow = {
 export function useLeaderboard() {
   return useQuery({
     queryKey: qk.leaderboard,
-    queryFn: async () => must(await supabase().rpc("weekly_leaderboard")) as LeaderRow[],
+    queryFn: async () => must(await supabase().rpc("streak_leaderboard")) as LeaderRow[],
   });
 }
 

@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import type { Entry } from "@/lib/data/hooks";
 import { computeStreak, dayLabel } from "@/lib/streaks";
+import { Avatar } from "./Avatar";
 import { Calendar12 } from "./Calendar";
 import { EntryCard } from "./EntryCard";
 import { Card } from "./ui";
@@ -25,7 +26,7 @@ export function ProfileView({
   actions,
   onEdit,
 }: {
-  user: { display_name: string; username: string };
+  user: { display_name: string; username: string; color?: string | null };
   entries: Entry[];
   today: string;
   /** Server stats for friends (their timezone); computed locally for me. */
@@ -45,6 +46,7 @@ export function ProfileView({
   return (
     <div className="flex flex-col gap-5">
       <Card className="flex items-center gap-4">
+        <Avatar name={user.display_name} color={user.color} size={64} />
         <div className="min-w-0 flex-1">
           <h1 className="truncate text-2xl">{user.display_name}</h1>
           <p className="truncate text-text-muted">@{user.username}</p>

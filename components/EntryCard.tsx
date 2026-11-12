@@ -1,4 +1,5 @@
 import type { Entry } from "@/lib/data/hooks";
+import { Avatar } from "./Avatar";
 import { StreakBadge } from "./StreakFlame";
 
 function host(url: string) {
@@ -17,7 +18,7 @@ export function EntryCard({
   onEdit,
 }: {
   entry: Entry;
-  author?: { display_name: string; username: string } | null;
+  author?: { display_name: string; username: string; color?: string | null } | null;
   streak?: number;
   onEdit?: () => void;
 }) {
@@ -27,6 +28,7 @@ export function EntryCard({
       {author && (
         <header className="mb-2 flex items-center gap-2">
           <a href={`/u/${author.username}`} className="flex min-h-11 items-center gap-2">
+            <Avatar name={author.display_name} color={author.color} size={32} />
             <span className="font-extrabold">{author.display_name}</span>
           </a>
           {streak !== undefined && <StreakBadge n={streak} />}
