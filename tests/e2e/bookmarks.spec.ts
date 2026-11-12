@@ -13,8 +13,8 @@ test("agent adds bookmarks with an API token", async ({ page, request }, info) =
   await page.waitForURL("**/today");
 
   await page.goto("/settings");
-  await page.getByLabel("Name").fill("agent");
-  await page.getByRole("button", { name: "Create" }).click();
+  await page.getByLabel("Name", { exact: true }).fill("agent");
+  await page.getByRole("button", { name: "Create", exact: true }).click();
   const token = (await page.locator("code", { hasText: /^rl_/ }).textContent())!.trim();
   expect(token).toMatch(/^rl_[0-9a-f]{48}$/);
 
@@ -33,7 +33,7 @@ test("agent adds bookmarks with an API token", async ({ page, request }, info) =
   await page.goto("/bookmarks");
   await expect(page.getByRole("link", { name: "Example via agent" })).toBeVisible();
   await page.getByLabel("Links, one per line").fill("https://example.org/");
-  await page.getByRole("button", { name: "Add" }).click();
+  await page.getByRole("button", { name: "Add", exact: true }).click();
   await expect(page.locator("li", { hasText: "example.org" })).toBeVisible();
 
   // Read → today's entry.
