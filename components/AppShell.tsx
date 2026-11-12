@@ -73,17 +73,17 @@ function Shell({ children }: { children: ReactNode }) {
   );
 
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-[1200px] lg:gap-8 lg:px-6">
+    <div className="min-h-dvh lg:grid lg:grid-cols-[12rem_minmax(0,640px)_12rem] lg:justify-center lg:gap-8 lg:px-6 xl:grid-cols-[15rem_minmax(0,640px)_15rem] xl:gap-10">
       <nav
         aria-label="Sections"
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-flame-off bg-surface pb-[env(safe-area-inset-bottom)] lg:sticky lg:top-0 lg:h-dvh lg:w-56 lg:shrink-0 lg:border-t-0 lg:bg-transparent lg:pt-8 lg:pb-0"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-flame-off bg-surface pb-[env(safe-area-inset-bottom)] lg:sticky lg:top-0 lg:h-dvh lg:border-t-0 lg:bg-transparent lg:pt-8 lg:pb-0"
       >
-        <Link href="/today" className="mb-6 hidden items-center gap-2 px-4 text-2xl font-extrabold text-primary-edge lg:flex">
+        <Link href="/today" className="mb-6 hidden h-10 items-center px-4 text-2xl font-extrabold text-primary-edge lg:flex">
           Readlet
         </Link>
         <div className="mx-auto max-w-[640px] lg:max-w-none">{nav}</div>
       </nav>
-      <main className="mx-auto w-full max-w-[640px] flex-1 px-4 pt-4 pb-28 lg:mx-0 lg:pt-8 lg:pb-12">
+      <main className="mx-auto w-full max-w-[640px] px-4 pt-4 pb-28 lg:px-0 lg:pt-8 lg:pb-12">
         <div className="mb-2 flex items-center justify-between lg:hidden">
           <Link href="/today" className="text-xl font-extrabold text-primary-edge">
             Readlet
@@ -92,13 +92,11 @@ function Shell({ children }: { children: ReactNode }) {
         </div>
         {children}
       </main>
-      <aside className="hidden w-72 shrink-0 flex-col items-end gap-6 pt-6 lg:flex" aria-label="Account and leaderboard">
-        <MeLink />
-        {wide && (
-          <div className="w-full">
-            <SideColumn />
-          </div>
-        )}
+      <aside className="hidden flex-col gap-6 pt-8 lg:flex" aria-label="Account and leaderboard">
+        <div className="flex h-10 justify-end">
+          <MeLink />
+        </div>
+        {wide && <SideColumn />}
       </aside>
     </div>
   );

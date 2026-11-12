@@ -13,7 +13,7 @@ export function SideColumn() {
   const board = useLeaderboard();
   if (!board.data || board.data.length < 2) return null;
   return (
-    <div className="sticky top-8">
+    <div className="sticky top-24">
       <Card>
         <h2 className="mb-3 text-lg">Leaderboard</h2>
         <ol className="flex flex-col gap-2">
