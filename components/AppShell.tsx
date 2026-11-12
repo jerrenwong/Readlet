@@ -12,6 +12,7 @@ import { useReady } from "@/lib/session/SessionProvider";
 const TABS = [
   { href: "/today", label: "Today", icon: "M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 15.6 7.1 18.2 8 12.7 4 8.8l5.5-.8z" },
   { href: "/feed", label: "Feed", icon: "M4 5h16v4H4zM4 11h16v4H4zM4 17h10v2H4z" },
+  { href: "/bookmarks", label: "Bookmarks", icon: "M6 3h12a1 1 0 0 1 1 1v17l-7-4.5L5 21V4a1 1 0 0 1 1-1z" },
   { href: "/leaderboard", label: "Leaderboard", icon: "M4 20V11h4v9zM10 20V5h4v15zM16 20v-6h4v6z" },
   {
     href: "/friends",
@@ -41,7 +42,7 @@ function Shell({ children }: { children: ReactNode }) {
   const pending = requests.data?.some((r) => r.incoming) ?? false;
 
   const nav = (
-    <ul className="grid grid-cols-4 lg:flex lg:flex-col lg:gap-1">
+    <ul className="grid grid-cols-5 lg:flex lg:flex-col lg:gap-1">
       {TABS.map((t) => {
         const active = isActive(path, t.href);
         return (

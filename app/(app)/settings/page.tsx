@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { ApiTokens } from "@/components/ApiTokens";
 import { Button } from "@/components/Button";
 import { Card, Field, Input } from "@/components/ui";
 import {
@@ -26,6 +27,7 @@ export default function SettingsPage() {
       <ProfileForm />
       <EmailForm />
       <PasswordForm />
+      <ApiTokens />
       <Danger />
     </div>
   );

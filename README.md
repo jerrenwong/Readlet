@@ -39,6 +39,21 @@ npm run test:e2e                                # Playwright, against local Supa
 CI (`.github/workflows/ci.yml`) runs lint, types, unit tests and a build on every push, and a second job
 that starts local Supabase, runs the RLS tests and the Playwright flow.
 
+## Bookmarks API (for agents)
+
+Create a token in Settings → API tokens (shown once; only its hash is stored; revoke any time). Tokens can only
+read and change your bookmarks.
+
+```bash
+TOKEN=rl_…
+curl -X POST https://readlet-read.vercel.app/api/bookmarks -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" -d '{"urls":["https://example.com/a","https://example.com/b"]}'
+# or {"url": "…", "title": "…"} or {"items": [{"url": "…", "title": "…"}]}; ≤ 100 per call; duplicates skipped;
+# missing titles are fetched from the page.
+curl https://readlet-read.vercel.app/api/bookmarks -H "Authorization: Bearer $TOKEN"            # list
+curl -X DELETE "https://readlet-read.vercel.app/api/bookmarks?id=<uuid>" -H "Authorization: Bearer $TOKEN"
+```
+
 ## Deploy
 
 Vercel builds every branch (preview URL) and `main` (production). Set `NEXT_PUBLIC_SUPABASE_URL` and

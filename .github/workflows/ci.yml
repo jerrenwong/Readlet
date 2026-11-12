@@ -39,7 +39,10 @@ jobs:
       - name: RLS tests (rolled back)
         run: |
           eval "$(supabase status -o env)"
-          { echo 'begin;'; cat supabase/tests/*.sql; echo 'rollback;'; } | psql "$DB_URL" -v ON_ERROR_STOP=1 -q
+          for f in supabase/tests/*.sql; do
+            echo "== $f"
+            { echo 'begin;'; cat "$f"; echo 'rollback;'; } | psql "$DB_URL" -v ON_ERROR_STOP=1 -q
+          done
       - run: npm ci
       - name: Build against local Supabase
         run: |
