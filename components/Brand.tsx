@@ -39,15 +39,42 @@ export function EmptyState({ art, children }: { art: ArtName; children: ReactNod
   );
 }
 
-/** Layout for signed-out pages: the AIST wordmark on top, a narrow column below. */
+// Both logo files are cropped to their ink, so equal heights mean equal letter heights.
+// 28px on phones, 32px from 640px, 36px from 1024px.
+const LOGO_H = "h-7 w-auto shrink-0 sm:h-8 lg:h-9";
+
+/**
+ * Layout for signed-out pages: the AIST × MAIA lockup at the left edge of a full-width header
+ * (inside the notch/rounded-corner safe area), then a narrow centered column. Every gap around the
+ * AIST wordmark stays above its required clear space, the hourglass width (~0.4× its height).
+ */
 export function PublicShell({ children }: { children: ReactNode }) {
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col px-4 pt-6 pb-8">
-      <header className="mb-8 flex items-center">
-        {/* Wordmark is 640×315; clear space around it is at least the hourglass width. */}
-        <Image src="/brand/aist-wordmark-teal.png" alt="AI Safety Team" width={61} height={30} loading="eager" />
+    <div className="flex min-h-dvh flex-col">
+      <header className="flex items-center gap-3.5 pt-[max(1.5rem,env(safe-area-inset-top))] pr-[max(1rem,env(safe-area-inset-right))] pl-[max(1rem,env(safe-area-inset-left))] sm:gap-4 sm:pl-[max(1.5rem,env(safe-area-inset-left))] lg:gap-5 lg:pl-[max(2rem,env(safe-area-inset-left))]">
+        <Image
+          src="/brand/aist-wordmark-teal-trim.png"
+          alt="AI Safety Team"
+          width={616}
+          height={293}
+          sizes="(min-width: 1024px) 76px, (min-width: 640px) 68px, 59px"
+          loading="eager"
+          className={LOGO_H}
+        />
+        <span aria-hidden="true" className="text-base leading-none text-text-muted sm:text-lg lg:text-xl">
+          ×
+        </span>
+        <Image
+          src="/brand/maia-light.svg"
+          alt="MIT AI Alignment"
+          width={611}
+          height={175}
+          loading="eager"
+          unoptimized
+          className={LOGO_H}
+        />
       </header>
-      {children}
-    </main>
+      <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col px-4 pt-8 pb-8">{children}</main>
+    </div>
   );
 }
