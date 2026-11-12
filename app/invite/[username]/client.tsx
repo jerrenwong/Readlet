@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Art, PublicShell } from "@/components/Brand";
 import { ButtonLink } from "@/components/Button";
 import { INVITE_KEY } from "@/components/InviteCard";
 import { Spinner } from "@/components/ui";
@@ -24,16 +25,22 @@ export function InvitePage() {
 
   if (status !== "signedOut") return <Spinner />;
   return (
-    <main className="mx-auto flex min-h-dvh max-w-[480px] flex-col items-center justify-center gap-5 px-4 text-center">
-      <h1 className="text-3xl">
-        <span className="text-primary-edge">@{name}</span> invited you to Readlet
-      </h1>
-      <ButtonLink href="/signup" className="w-full max-w-xs text-xl">
-        Start reading
-      </ButtonLink>
-      <Link href="/signin" className="min-h-11 font-extrabold text-accent-text underline underline-offset-4">
-        I already have an account
-      </Link>
-    </main>
+    <PublicShell>
+      <div className="flex flex-1 flex-col items-center justify-center gap-6 pb-12 text-center">
+        <Art name="reading" height={144} hero />
+        <h1 className="text-5xl leading-tight">
+          <span className="text-flame">@{name}</span> invited you to Readlet
+        </h1>
+        <ButtonLink href="/signup" className="w-full max-w-xs">
+          Start reading
+        </ButtonLink>
+        <Link
+          href="/signin"
+          className="inline-flex min-h-11 items-center font-semibold text-accent-text underline decoration-accent/40 decoration-2 underline-offset-4 hover:decoration-accent"
+        >
+          I already have an account
+        </Link>
+      </div>
+    </PublicShell>
   );
 }

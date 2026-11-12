@@ -46,7 +46,7 @@ export function UserCard({ username, onDone }: { username: string; onDone?: () =
   if (user.isLoading) return null;
   if (!user.data)
     return (
-      <p className="rounded-[var(--radius-card)] bg-surface p-4 text-text-muted">
+      <p className="border border-flame-off bg-surface p-4 text-text-muted">
         No user @{username}
       </p>
     );
@@ -56,10 +56,10 @@ export function UserCard({ username, onDone }: { username: string; onDone?: () =
   const req = requests.data?.find((r) => r.other.id === u.id);
 
   return (
-    <div className="flex items-center gap-3 rounded-[var(--radius-card)] bg-surface p-4 shadow-sm">
+    <div className="flex items-center gap-3 border border-flame-off bg-surface p-4">
       <Avatar name={u.display_name} size={48} />
       <div className="min-w-0 flex-1">
-        <p className="truncate text-lg font-extrabold">{u.display_name}</p>
+        <p className="truncate text-lg font-semibold">{u.display_name}</p>
         <p className="truncate text-text-muted">@{u.username}</p>
         {error && (
           <p className="text-sm text-danger-text" role="alert">
@@ -70,7 +70,7 @@ export function UserCard({ username, onDone }: { username: string; onDone?: () =
       {isMe ? (
         <span className="text-text-muted">You</span>
       ) : isFriend ? (
-        <span className="font-extrabold text-accent-text">Friends</span>
+        <span className="font-semibold text-accent-text">Friends</span>
       ) : req?.incoming ? (
         <Button
           size="sm"

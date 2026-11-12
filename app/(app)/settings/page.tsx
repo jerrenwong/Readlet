@@ -22,7 +22,7 @@ const msg = (e: unknown) =>
 export default function SettingsPage() {
   return (
     <div className="flex flex-col gap-5">
-      <h1 className="text-2xl">Settings</h1>
+      <h1 className="text-5xl text-flame">Settings</h1>
       <ProfileForm />
       <EmailForm />
       <PasswordForm />
@@ -61,7 +61,7 @@ function ProfileForm() {
   return (
     <Card>
       <form onSubmit={save} className="flex flex-col gap-4">
-        <h2 className="text-lg">Profile</h2>
+        <h2 className="text-2xl">Profile</h2>
         <Field label="Username">
           <Input value={username} onChange={(e) => setUsername(e.target.value)} autoCapitalize="none" spellCheck={false} />
         </Field>
@@ -97,7 +97,7 @@ function EmailForm() {
   return (
     <Card>
       <form onSubmit={save} className="flex flex-col gap-4">
-        <h2 className="text-lg">Email</h2>
+        <h2 className="text-2xl">Email</h2>
         <Field label="Email" error={state.error}>
           <Input type="email" value={value} onChange={(e) => setValue(e.target.value)} autoComplete="email" />
         </Field>
@@ -137,7 +137,7 @@ function PasswordForm() {
   return (
     <Card>
       <form onSubmit={save} className="flex flex-col gap-4">
-        <h2 className="text-lg">Change password</h2>
+        <h2 className="text-2xl">Change password</h2>
         <Field label="Current password">
           <Input type="password" value={current} onChange={(e) => setCurrent(e.target.value)} autoComplete="current-password" />
         </Field>
@@ -175,7 +175,7 @@ function Danger() {
         Sign out
       </Button>
       <hr className="border-flame-off" />
-      <h2 className="text-lg text-danger-text">Delete account</h2>
+      <h2 className="text-2xl text-danger-text">Delete account</h2>
       <p className="text-sm text-text-muted">Permanent. Deletes all your data.</p>
       <Field label={`Type ${profile.username} to confirm`}>
         <Input value={typed} onChange={(e) => setTyped(e.target.value)} autoCapitalize="none" spellCheck={false} />

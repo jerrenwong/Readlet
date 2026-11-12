@@ -24,12 +24,12 @@ export function EntryCard({
 }) {
   const c = entry;
   return (
-    <article className="rounded-[var(--radius-card)] bg-surface p-4 shadow-sm">
+    <article className="border border-flame-off bg-surface p-4">
       {author && (
         <header className="mb-2 flex items-center gap-2">
           <a href={`/u/${author.username}`} className="flex min-h-11 items-center gap-2">
             <Avatar name={author.display_name} size={32} />
-            <span className="font-extrabold">{author.display_name}</span>
+            <span className="font-semibold">{author.display_name}</span>
           </a>
           {streak !== undefined && <StreakBadge n={streak} />}
           <time className="ml-auto text-sm text-text-muted" dateTime={entry.created_at}>
@@ -46,7 +46,7 @@ export function EntryCard({
                   href={c.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-accent-text underline decoration-2 underline-offset-2"
+                  className="text-accent-text underline decoration-accent/40 decoration-2 underline-offset-4 hover:decoration-accent"
                 >
                   {c.title}
                 </a>
@@ -61,7 +61,7 @@ export function EntryCard({
             <button
               type="button"
               onClick={onEdit}
-              className="min-h-11 shrink-0 rounded-xl px-3 font-extrabold text-accent-text hover:bg-accent/10"
+              className="min-h-11 shrink-0 px-3 font-semibold text-accent-text hover:bg-accent/10"
             >
               Edit
             </button>

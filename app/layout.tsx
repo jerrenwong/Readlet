@@ -1,12 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Nunito } from "next/font/google";
+import { Barlow_Condensed, Libre_Franklin } from "next/font/google";
 import { Providers } from "./providers";
 import "./globals.css";
 
-const nunito = Nunito({
-  variable: "--font-nunito",
+const libreFranklin = Libre_Franklin({
+  variable: "--font-libre-franklin",
   subsets: ["latin"],
-  weight: ["600", "800"],
+  weight: ["400", "500", "600"],
+});
+
+const barlowCondensed = Barlow_Condensed({
+  variable: "--font-barlow-condensed",
+  subsets: ["latin"],
+  weight: ["600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -17,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#FFF7EE",
+  themeColor: "#F3EEE3",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -25,7 +31,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${nunito.variable} h-full antialiased`}>
+    <html lang="en" className={`${libreFranklin.variable} ${barlowCondensed.variable} h-full antialiased`}>
       <body className="min-h-full font-sans">
         <Providers>{children}</Providers>
       </body>

@@ -121,7 +121,7 @@ function EntryForm({
           />
           {suggesting && (
             <span
-              className="absolute top-1/2 right-4 size-5 -translate-y-1/2 animate-spin rounded-full border-[3px] border-flame-off border-t-primary"
+              className="absolute top-1/2 right-4 size-5 -translate-y-1/2 animate-spin rounded-full border-[3px] border-flame-off border-t-accent"
               role="status"
               aria-label="Fetching title"
             />
@@ -167,7 +167,7 @@ function EntryForm({
           type="button"
           onClick={remove}
           disabled={del.isPending}
-          className="min-h-11 rounded-xl font-extrabold text-danger-text hover:bg-danger/10"
+          className="min-h-11 font-semibold text-danger-text hover:bg-danger/10"
         >
           Delete
         </button>

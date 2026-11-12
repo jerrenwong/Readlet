@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
+import { PublicShell } from "@/components/Brand";
 import { Button } from "@/components/Button";
 import { Field, Input } from "@/components/ui";
 import { FriendlyError, sendPasswordReset } from "@/lib/session/auth";
@@ -22,11 +23,11 @@ export default function ForgotPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col px-4 py-8">
-      <Link href="/signin" className="mb-4 min-h-11 self-start font-extrabold text-text-muted">
+    <PublicShell>
+      <Link href="/signin" className="mb-4 inline-flex min-h-11 items-center self-start font-semibold text-text-muted hover:text-text">
         ← Back
       </Link>
-      <h1 className="mb-6 text-3xl">Reset password</h1>
+      <h1 className="mb-6 text-5xl text-flame">Reset password</h1>
       {state.sent ? (
         <p role="status">Check your email for a reset link.</p>
       ) : (
@@ -39,6 +40,6 @@ export default function ForgotPage() {
           </Button>
         </form>
       )}
-    </main>
+    </PublicShell>
   );
 }

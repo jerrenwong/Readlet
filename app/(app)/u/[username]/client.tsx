@@ -56,7 +56,7 @@ export function FriendProfilePage() {
           ) : (
             <button
               type="button"
-              className="min-h-11 rounded-xl px-3 text-text-muted hover:bg-surface"
+              className="min-h-11 px-3 text-text-muted hover:bg-surface hover:text-text"
               onClick={() => setConfirm(true)}
             >
               Remove friend

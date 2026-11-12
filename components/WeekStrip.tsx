@@ -14,12 +14,12 @@ export function WeekStrip({ days, today }: { days: ReadonlySet<string>; today: s
         const future = date > today;
         return (
           <li key={d} className="flex flex-col items-center gap-1">
-            <span className={`text-xs ${isToday ? "font-extrabold text-text" : "text-text-muted"}`}>{d}</span>
+            <span className={`text-xs uppercase tracking-wider ${isToday ? "font-semibold text-text" : "text-text-muted"}`}>{d}</span>
             <span
               role="img"
-              className={`flex size-9 items-center justify-center rounded-full text-lg font-extrabold ${
-                done ? "bg-accent text-white" : future ? "border-2 border-dashed border-flame-off" : "bg-flame-off/50"
-              } ${isToday ? "ring-2 ring-primary ring-offset-2 ring-offset-surface" : ""}`}
+              className={`flex size-9 items-center justify-center rounded-full text-lg font-semibold ${
+                done ? "bg-accent text-white" : future ? "border border-dashed border-field" : "bg-flame-off/60"
+              } ${isToday ? "ring-2 ring-primary-edge ring-offset-2 ring-offset-surface" : ""}`}
               aria-label={`${d}: ${done ? "read" : future ? "upcoming" : "no read"}`}
             >
               {done ? "✓" : ""}

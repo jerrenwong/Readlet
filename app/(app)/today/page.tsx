@@ -61,11 +61,11 @@ export default function TodayPage() {
         <div className="flex items-center gap-3">
           <StreakFlame lit={streak.today} size={60} />
           <div className="flex flex-1 items-baseline gap-2 whitespace-nowrap">
-            <span className="relative inline-block h-14 overflow-hidden" aria-live="polite">
+            <span className="relative inline-block h-[4.5rem] overflow-hidden" aria-live="polite">
               <AnimatePresence mode="popLayout" initial={false}>
                 <motion.span
                   key={streak.current}
-                  className="num block text-6xl leading-[3.5rem]"
+                  className="num block text-7xl leading-[4.5rem]"
                   initial={{ y: "100%", opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: "-100%", opacity: 0 }}
@@ -78,14 +78,14 @@ export default function TodayPage() {
             <span className="text-lg text-text-muted">day streak</span>
           </div>
         </div>
-        {line && <p className="mt-2 text-lg font-extrabold">{line}</p>}
+        {line && <p className="mt-2 text-lg font-semibold">{line}</p>}
       </Card>
 
       <Card className="!p-4">
         <WeekStrip days={days} today={today} />
       </Card>
 
-      <Button className="w-full text-xl" onClick={() => setSheet({ open: true, editing: null })}>
+      <Button className="w-full" onClick={() => setSheet({ open: true, editing: null })}>
         + Log a read
       </Button>
 

@@ -1,6 +1,6 @@
 // Readlet service worker: caches the app shell so the app opens offline. Logging still needs a connection.
 // It never caches Supabase responses (entries are fetched fresh and stay encrypted at rest anyway).
-const CACHE = "readlet-shell-v1";
+const CACHE = "readlet-shell-v2"; // v2: AIST redesign (new icons)
 const SHELL = ["/today", "/welcome", "/manifest.webmanifest", "/icon-192.png"];
 
 self.addEventListener("install", (e) => {

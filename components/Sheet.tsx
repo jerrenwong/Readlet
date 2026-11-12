@@ -37,7 +37,7 @@ export function Sheet({
       {open && (
         <div className="fixed inset-0 z-50 flex items-end justify-center lg:items-center" role="presentation">
           <motion.div
-            className="absolute inset-0 bg-text/40"
+            className="absolute inset-0 bg-text/50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -48,19 +48,19 @@ export function Sheet({
             role="dialog"
             aria-modal="true"
             aria-label={title}
-            className="relative max-h-[92dvh] w-full max-w-[640px] overflow-y-auto rounded-t-[var(--radius-card)] bg-surface px-5 pt-3 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-xl lg:max-w-[520px] lg:rounded-[var(--radius-card)] lg:p-6"
+            className="relative max-h-[92dvh] w-full max-w-[640px] overflow-y-auto border-t-4 border-flame bg-surface px-5 pt-3 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-xl lg:max-w-[520px] lg:p-6"
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%", opacity: 0 }}
             transition={{ type: "spring", damping: 28, stiffness: 320 }}
           >
-            <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-flame-off lg:hidden" aria-hidden="true" />
+            <div className="mx-auto mb-3 h-1 w-12 bg-flame-off lg:hidden" aria-hidden="true" />
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-xl">{title}</h2>
+              <h2 className="text-3xl">{title}</h2>
               <button
                 type="button"
                 onClick={onClose}
-                className="flex size-11 items-center justify-center rounded-full text-2xl text-text-muted hover:bg-background"
+                className="flex size-11 items-center justify-center text-2xl text-text-muted hover:bg-background hover:text-text"
                 aria-label="Close"
               >
                 ×

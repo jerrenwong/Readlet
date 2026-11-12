@@ -28,7 +28,7 @@ export default function MePage() {
         actions={
           <Link
             href="/settings"
-            className="flex min-h-12 items-center justify-center rounded-2xl bg-surface font-extrabold shadow-sm"
+            className="flex min-h-12 items-center justify-center border border-field bg-surface font-semibold hover:border-text"
           >
             Settings
           </Link>

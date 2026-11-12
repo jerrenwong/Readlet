@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { Art } from "@/components/Brand";
 import { Button } from "@/components/Button";
 import { PublicPage } from "@/components/PublicPage";
 import { Field, Input } from "@/components/ui";
@@ -67,10 +68,13 @@ export default function SignUpPage() {
 
   return (
     <PublicPage>
-      <Link href="/welcome" className="mb-4 min-h-11 self-start font-extrabold text-text-muted">
+      <Link href="/welcome" className="mb-4 inline-flex min-h-11 items-center self-start font-semibold text-text-muted hover:text-text">
         ← Back
       </Link>
-      <h1 className="mb-6 text-3xl">Sign up</h1>
+      <div className="mb-6 flex items-end justify-between gap-4">
+        <h1 className="text-6xl text-flame">Sign up</h1>
+        <Art name="reading" height={64} />
+      </div>
       <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
         <Field label="Email" error={errors.email}>
           <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" inputMode="email" />
